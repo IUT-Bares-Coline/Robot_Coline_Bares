@@ -1,0 +1,15 @@
+C:\Users\colin\Desktop\projet_robot\projetrobotCB\projetrobotCB\bin\Debug\projetrobotCB.exe.config
+C:\Users\colin\Desktop\projet_robot\projetrobotCB\projetrobotCB\bin\Debug\projetrobotCB.exe
+C:\Users\colin\Desktop\projet_robot\projetrobotCB\projetrobotCB\bin\Debug\projetrobotCB.pdb
+C:\Users\colin\Desktop\projet_robot\projetrobotCB\projetrobotCB\obj\Debug\projetrobotCB.csprojAssemblyReference.cache
+C:\Users\colin\Desktop\projet_robot\projetrobotCB\projetrobotCB\obj\Debug\MainWindow.g.cs
+C:\Users\colin\Desktop\projet_robot\projetrobotCB\projetrobotCB\obj\Debug\App.g.cs
+C:\Users\colin\Desktop\projet_robot\projetrobotCB\projetrobotCB\obj\Debug\projetrobotCB_MarkupCompile.cache
+C:\Users\colin\Desktop\projet_robot\projetrobotCB\projetrobotCB\obj\Debug\projetrobotCB_MarkupCompile.lref
+C:\Users\colin\Desktop\projet_robot\projetrobotCB\projetrobotCB\obj\Debug\MainWindow.baml
+C:\Users\colin\Desktop\projet_robot\projetrobotCB\projetrobotCB\obj\Debug\projetrobotCB.g.resources
+C:\Users\colin\Desktop\projet_robot\projetrobotCB\projetrobotCB\obj\Debug\projetrobotCB.Properties.Resources.resources
+C:\Users\colin\Desktop\projet_robot\projetrobotCB\projetrobotCB\obj\Debug\projetrobotCB.csproj.GenerateResource.cache
+C:\Users\colin\Desktop\projet_robot\projetrobotCB\projetrobotCB\obj\Debug\projetrobotCB.csproj.CoreCompileInputs.cache
+C:\Users\colin\Desktop\projet_robot\projetrobotCB\projetrobotCB\obj\Debug\projetrobotCB.exe
+C:\Users\colin\Desktop\projet_robot\projetrobotCB\projetrobotCB\obj\Debug\projetrobotCB.pdb

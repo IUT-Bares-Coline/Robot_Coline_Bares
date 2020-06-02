@@ -1,0 +1,19 @@
+/* 
+ * File:   ADC.h
+ * Author: TP_EO_6
+ *
+ * Created on 2 mars 2020, 16:44
+ */
+
+#ifndef ADC_H
+#define	ADC_H
+
+void InitADC1(void);
+void __attribute__((interrupt, no_auto_psv)) _AD1Interrupt(void);
+void ADC1StartConversionSequence();
+unsigned int * ADCGetResult(void);
+unsigned char ADCIsConversionFinished(void);
+void ADCClearConversionFinishedFlag(void);
+
+#endif	/* ADC_H */
+
