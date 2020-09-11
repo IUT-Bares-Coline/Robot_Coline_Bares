@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace projetrobotCB
 {
@@ -21,28 +22,55 @@ namespace projetrobotCB
     /// </summary>
     public partial class MainWindow : Window
     {
+        Robot robot = new Robot();
         ReliableSerialPort serialPort1;
+        DispatcherTimer timerAffichage ;
+
         public MainWindow()
         {
             InitializeComponent();
-            serialPort1 = new ReliableSerialPort("COM8", 115200, System.IO.Ports.Parity.None, 8, System.IO.Ports.StopBits.One);
+
+            timerAffichage = new DispatcherTimer();
+            timerAffichage.Interval = new TimeSpan(0, 0, 0, 0, 100);
+            timerAffichage.Tick += TimerAffichage_Tick;
+            timerAffichage.Start();
+
+            serialPort1 = new ReliableSerialPort("COM4", 115200, System.IO.Ports.Parity.None, 8, System.IO.Ports.StopBits.One);
             serialPort1.DataReceived += SerialPort1_DataReceived;
             serialPort1.Open();
         }
-        
+
+        private void TimerAffichage_Tick(object sender, EventArgs e)
+        {
+            //throw new NotImplementedException();
+            while(robot.receivedBytes.Count>0)
+            {
+                byte b = robot.receivedBytes.Dequeue();
+                textBoxReception.Text += " 0x" + b.ToString("X2");
+            }
+            if (robot.receivedText != null)
+            {
+                textBoxReception.Text = textBoxReception.Text + "Reçu : " + robot.receivedText;
+                robot.receivedText = null;
+            }
+            
+        }
+
         public void SerialPort1_DataReceived(object sender, DataReceivedArgs e)
         {
-            textBoxReception.Text += Encoding.UTF8.GetString(e.Data, 0, e.Data.Length) ;
+            foreach(byte b in e.Data)
+            {
+                robot.receivedBytes.Enqueue(b);
+            }
+            //robot.receivedText += Encoding.UTF8.GetString(e.Data, 0, e.Data.Length);            
+            //textBoxReception.Text += Encoding.UTF8.GetString(e.Data, 0, e.Data.Length) ;
         }
 
         private void SendMessage()
         {
-        serialPort1.WriteLine(textBoxEmission.Text); 
-        //textBoxReception.Text = textBoxReception.Text + "\nReçu : " + textBoxEmission.Text;
-        textBoxEmission.Text = "";
+            serialPort1.WriteLine(textBoxEmission.Text);
+            textBoxEmission.Text = "";
         }
-
-
 
         private void buttonEnvoyer_Click(object sender, RoutedEventArgs e)
         {
@@ -65,6 +93,23 @@ namespace projetrobotCB
                 SendMessage();
             }
 
+        }
+
+        private void button_Click(object sender, RoutedEventArgs e)
+        {
+            textBoxReception.Text = null; 
+        }
+
+
+        private void ButtonTest_Click(object sender, RoutedEventArgs e)
+        {
+            int i;                       
+            byte[] byteList = new byte[20];
+            for (i = 0; i < 20; i++)
+            {
+                byteList[i] = (byte)(2 * i);
+            }
+            serialPort1.Write(byteList, 0, byteList.Length);
         }
     }
 }
