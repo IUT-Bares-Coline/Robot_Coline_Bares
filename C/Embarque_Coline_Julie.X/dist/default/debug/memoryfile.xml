@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project>
-  <executable name="dist/default/debug/Projet_Bobby.X.debug.elf">
+  <executable name="dist/default/debug/Embarque_Coline_Julie.X.debug.elf">
     <memory name="data">
       <units>bytes</units>
       <length>49152</length>
@@ -11,8 +11,8 @@
     <memory name="program">
       <units>bytes</units>
       <length>524514</length>
-      <used>5514</used>
-      <free>519000</free>
+      <used>5787</used>
+      <free>518727</free>
     </memory>
   </executable>
 </project>

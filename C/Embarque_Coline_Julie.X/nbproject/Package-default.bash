@@ -10,9 +10,9 @@ CND_CONF=default
 CND_DISTDIR=dist
 TMPDIR=build/${CND_CONF}/${IMAGE_TYPE}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/Projet_Bobby20200312.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-OUTPUT_BASENAME=Projet_Bobby20200312.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-PACKAGE_TOP_DIR=projetbobby20200312.x/
+OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/Embarque_Coline_Julie.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+OUTPUT_BASENAME=Embarque_Coline_Julie.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+PACKAGE_TOP_DIR=embarquecolinejulie.x/
 
 # Functions
 function checkReturnCode
@@ -57,15 +57,15 @@ mkdir -p ${TMPDIR}
 
 # Copy files and create directories and links
 cd "${TOP}"
-makeDirectory ${TMPDIR}/projetbobby20200312.x/bin
+makeDirectory ${TMPDIR}/embarquecolinejulie.x/bin
 copyFileToTmpDir "${OUTPUT_PATH}" "${TMPDIR}/${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}" 0755
 
 
 # Generate tar file
 cd "${TOP}"
-rm -f ${CND_DISTDIR}/${CND_CONF}/package/projetbobby20200312.x.tar
+rm -f ${CND_DISTDIR}/${CND_CONF}/package/embarquecolinejulie.x.tar
 cd ${TMPDIR}
-tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/projetbobby20200312.x.tar *
+tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/embarquecolinejulie.x.tar *
 checkReturnCode
 
 # Cleanup
