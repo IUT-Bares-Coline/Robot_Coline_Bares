@@ -46,13 +46,13 @@ namespace projetrobotCB
             while(robot.receivedBytes.Count>0)
             {
                 byte b = robot.receivedBytes.Dequeue();
-                textBoxReception.Text += " 0x" + b.ToString("X2");
+                textBoxReception.Text += " 0x" + b.ToString("X4");
             }
-            if (robot.receivedText != null)
-            {
-                textBoxReception.Text = textBoxReception.Text + "Reçu : " + robot.receivedText;
-                robot.receivedText = null;
-            }
+            //if (robot.receivedText != null)
+            //{
+            //    textBoxReception.Text = textBoxReception.Text + "Reçu : " + robot.receivedText;
+            //    robot.receivedText = null;
+            //}
             
         }
 
