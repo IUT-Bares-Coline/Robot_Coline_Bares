@@ -35,7 +35,7 @@ namespace projetrobotCB
             timerAffichage.Tick += TimerAffichage_Tick;
             timerAffichage.Start();
 
-            serialPort1 = new ReliableSerialPort("COM4", 115200, System.IO.Ports.Parity.None, 8, System.IO.Ports.StopBits.One);
+            serialPort1 = new ReliableSerialPort("COM5", 115200, System.IO.Ports.Parity.None, 8, System.IO.Ports.StopBits.One);
             serialPort1.DataReceived += SerialPort1_DataReceived;
             serialPort1.Open();
         }
@@ -46,7 +46,7 @@ namespace projetrobotCB
             while(robot.receivedBytes.Count>0)
             {
                 byte b = robot.receivedBytes.Dequeue();
-                textBoxReception.Text += " 0x" + b.ToString("X4");
+                textBoxReception.Text += " 0x" + b.ToString("X2");
             }
             //if (robot.receivedText != null)
             //{

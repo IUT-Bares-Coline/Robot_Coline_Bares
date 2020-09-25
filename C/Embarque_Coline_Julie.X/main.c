@@ -1,4 +1,5 @@
 #include <xc.h>
+#include <libpic30.h>
 #include "ChipConfig.h"
 #include "IO.h"
 #include "timer.h"
@@ -75,10 +76,9 @@ int main(void) {
                 LED_BLANCHE = 0;
             }
         }
-
-    }
-
-    
+        //SendMessageDirect((unsigned char*)"bonjour",7);
+        //__delay32(4000000);
+    }    
 }// fin main
     
 

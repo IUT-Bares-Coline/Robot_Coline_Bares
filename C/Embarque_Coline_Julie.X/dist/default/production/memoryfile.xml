@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project>
-  <executable name="dist/default/debug/Embarque_Coline_Julie.X.debug.elf">
+  <executable name="dist/default/production/Embarque_Coline_Julie.X.production.elf">
     <memory name="data">
       <units>bytes</units>
       <length>49152</length>
-      <used>132</used>
-      <free>49020</free>
+      <used>52</used>
+      <free>49100</free>
     </memory>
     <memory name="program">
       <units>bytes</units>
       <length>524514</length>
-      <used>5862</used>
-      <free>518652</free>
+      <used>5787</used>
+      <free>518727</free>
     </memory>
   </executable>
 </project>
