@@ -27,13 +27,12 @@ void CB_TX1_Add(unsigned char value)
 {
     if(cbTx1Tail<CBTX1_BUFFER_SIZE)
     {
-        cbTx1Buffer[cbTx1Tail+1] = value ;
-        cbTx1Tail+=1;
+
     }
 }
 unsigned char CB_TX1_Get(void)
 {
-. . .
+    
 }
 void __attribute__ ((interrupt, no_auto_psv)) _U1TXInterrupt (void) {
     IFS0bits.U1TXIF = 0 ; // c l e a r TX i n t e r r u p t f l a g
@@ -52,12 +51,12 @@ void SendOne ( )
 }
 unsigned char CB_TX1_IsTranmitting ( void)
 {
-... 
+
 }
 int CB_TX1_RemainingSize (void)
 {
     int rSize;
-. .
+
     return rSize;
 }
 //p17
