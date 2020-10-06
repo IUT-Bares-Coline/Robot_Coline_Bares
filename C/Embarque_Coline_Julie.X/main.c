@@ -9,6 +9,7 @@
 #include "adc.h"
 #include "main.h"
 #include "UART.h"
+#include "CB_TX1.h"
 
 int main(void) {
     /***************************************************************************************************/
@@ -78,6 +79,7 @@ int main(void) {
         }
         //SendMessageDirect((unsigned char*)"bonjour",7);
         //__delay32(4000000);
+        SendMessage((unsigned char*) "bonjour", 7);
     }    
 }// fin main
     

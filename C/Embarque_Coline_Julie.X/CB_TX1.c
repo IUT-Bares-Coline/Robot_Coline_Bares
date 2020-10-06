@@ -7,7 +7,7 @@
 
 int cbTx1Head;
 int cbTx1Tail;
-unsigned char cbTx1Buffe[CBTX1_BUFFER_SIZE] ;
+unsigned char cbTx1Buffer[CBTX1_BUFFER_SIZE] ;
 unsigned char isTransmitting = 0 ;
 
 
@@ -19,21 +19,26 @@ void SendMessage (unsigned char* message , int length )
 //On peut é c r i r e l e message
         for (i=0; i<length; i++)
             CB_TX1_Add(message[i]) ;
-        if (!CB_TX1_IsTranmitting())
+        if (!CB_TX1_IsTransmitting())
             SendOne();
     }
 }
+
 void CB_TX1_Add(unsigned char value)
 {
-    if(cbTx1Tail<CBTX1_BUFFER_SIZE)
-    {
-
-    }
+    cbTx1Buffer[cbTx1Head++]=value ; 
+    if(cbTx1Head>CBTX1_BUFFER_SIZE)
+        cbTx1Head=0;
 }
+
 unsigned char CB_TX1_Get(void)
 {
-    
+    unsigned char caractere = cbTx1Buffer[cbTx1Tail++];
+        if(cbTx1Tail>CBTX1_BUFFER_SIZE)
+        cbTx1Tail=0;
+    return caractere ;
 }
+
 void __attribute__ ((interrupt, no_auto_psv)) _U1TXInterrupt (void) {
     IFS0bits.U1TXIF = 0 ; // c l e a r TX i n t e r r u p t f l a g
     if (cbTx1Tail!=cbTx1Head)
@@ -43,20 +48,30 @@ void __attribute__ ((interrupt, no_auto_psv)) _U1TXInterrupt (void) {
     else
         isTransmitting = 0 ;
 }
+
 void SendOne ( )
 {
     isTransmitting = 1 ;
     unsigned char value=CB_TX1_Get() ;
     U1TXREG = value ; // Transmit one c h a r a c t e r
 }
-unsigned char CB_TX1_IsTranmitting ( void)
-{
 
+unsigned char CB_TX1_IsTransmitting ( void)
+{
+    return isTransmitting;
 }
+
+int CB_TX1_GetDataSize (void)
+{
+    if(cbTx1Head > cbTx1Tail){
+        return cbTx1Head-cbTx1Tail;
+    }
+    else 
+        return CBTX1_BUFFER_SIZE -(cbTx1Tail-cbTx1Head);
+}
+
 int CB_TX1_RemainingSize (void)
 {
-    int rSize;
-
-    return rSize;
+    return CBTX1_BUFFER_SIZE - CB_TX1_GetDataSize();
 }
 //p17
