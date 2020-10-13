@@ -10,6 +10,7 @@
 #include "main.h"
 #include "UART.h"
 #include "CB_TX1.h"
+#include "CB_RX1.h"
 
 int main(void) {
     /***************************************************************************************************/
@@ -79,7 +80,13 @@ int main(void) {
         }
         //SendMessageDirect((unsigned char*)"bonjour",7);
         //__delay32(4000000);
-        SendMessage((unsigned char*) "bonjour", 7);
+        //SendMessage((unsigned char*) "bonjour", 7);
+        int i;
+        for(i=0; i<CB_RX1_GetDataSize(); i++){
+            unsigned char c = CB_RX1_Get();
+            SendMessage(&c, 1);
+        }
+        __delay32(1000);
     }    
 }// fin main
     
@@ -105,8 +112,8 @@ void OperatingSystemLoop(void) {
             break;
 
         case STATE_AVANCE:
-            PWMSetSpeedConsigne(-20, MOTEUR_DROIT);
-            PWMSetSpeedConsigne(-20, MOTEUR_GAUCHE);
+            PWMSetSpeedConsigne(20, MOTEUR_DROIT);
+            PWMSetSpeedConsigne(20, MOTEUR_GAUCHE);
             stateRobot = STATE_AVANCE_EN_COURS;
             break;
         case STATE_AVANCE_EN_COURS:
@@ -114,7 +121,7 @@ void OperatingSystemLoop(void) {
             break;
 
         case STATE_TOURNE_GAUCHE:
-            PWMSetSpeedConsigne(-20, MOTEUR_DROIT); 
+            PWMSetSpeedConsigne(20, MOTEUR_DROIT); 
             PWMSetSpeedConsigne(0, MOTEUR_GAUCHE);
             stateRobot = STATE_TOURNE_GAUCHE_EN_COURS;
             break;
@@ -124,7 +131,7 @@ void OperatingSystemLoop(void) {
 
         case STATE_TOURNE_DROITE:
             PWMSetSpeedConsigne(0, MOTEUR_DROIT);
-            PWMSetSpeedConsigne(-20, MOTEUR_GAUCHE);
+            PWMSetSpeedConsigne(20, MOTEUR_GAUCHE);
             stateRobot = STATE_TOURNE_DROITE_EN_COURS;
             break;
         case STATE_TOURNE_DROITE_EN_COURS:
@@ -132,8 +139,8 @@ void OperatingSystemLoop(void) {
             break;
 
         case STATE_TOURNE_SUR_PLACE_GAUCHE:
-            PWMSetSpeedConsigne(-10, MOTEUR_DROIT);
-            PWMSetSpeedConsigne(10, MOTEUR_GAUCHE);
+            PWMSetSpeedConsigne(10, MOTEUR_DROIT);
+            PWMSetSpeedConsigne(-10, MOTEUR_GAUCHE);
             stateRobot = STATE_TOURNE_SUR_PLACE_GAUCHE_EN_COURS;
             break;
         case STATE_TOURNE_SUR_PLACE_GAUCHE_EN_COURS:
@@ -141,8 +148,8 @@ void OperatingSystemLoop(void) {
             break;
 
         case STATE_TOURNE_SUR_PLACE_DROITE:
-            PWMSetSpeedConsigne(10, MOTEUR_DROIT);
-            PWMSetSpeedConsigne(-10, MOTEUR_GAUCHE);
+            PWMSetSpeedConsigne(-10, MOTEUR_DROIT);
+            PWMSetSpeedConsigne(10, MOTEUR_GAUCHE);
             stateRobot = STATE_TOURNE_SUR_PLACE_DROITE_EN_COURS;
             break;
         case STATE_TOURNE_SUR_PLACE_DROITE_EN_COURS:
@@ -170,17 +177,17 @@ void SetNextRobotStateInAutomaticMode() {
 
     //Détermination de la position des obstacles en fonction des télémètres
     if (robotState.distanceTelemetreDroit < 20 && //20
-            robotState.distanceTelemetreCentre > 10 && //10
+            robotState.distanceTelemetreCentre > 20 && //10
             robotState.distanceTelemetreGauche > 20) //Obstacle à droite  //20
         positionObstacle = OBSTACLE_A_DROITE;
     else if (robotState.distanceTelemetreDroit > 20 && //20
-            robotState.distanceTelemetreCentre > 10 &&  //10
+            robotState.distanceTelemetreCentre > 20 &&  //10
             robotState.distanceTelemetreGauche < 20) //Obstacle à gauche  //20
         positionObstacle = OBSTACLE_A_GAUCHE;
-    else if (robotState.distanceTelemetreCentre < 10) //Obstacle en face  //10
+    else if (robotState.distanceTelemetreCentre < 20) //Obstacle en face  //10
         positionObstacle = OBSTACLE_EN_FACE;
     else if (robotState.distanceTelemetreDroit > 20 &&  //20
-            robotState.distanceTelemetreCentre > 10 &&  //10
+            robotState.distanceTelemetreCentre > 20 &&  //10
             robotState.distanceTelemetreGauche > 20) //pas d?obstacle  //20
         positionObstacle = PAS_D_OBSTACLE;
     //-10 a chaque distance penser a les remettre apres
