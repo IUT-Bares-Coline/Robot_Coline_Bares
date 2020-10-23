@@ -112,4 +112,14 @@ namespace projetrobotCB
             serialPort1.Write(byteList, 0, byteList.Length);
         }
     }
+
+    /*
+    byte CalculateChecksum(int msgFunction, int msgPayloadLength, byte[] msgPayload )
+    {
+        int checksum = 0;
+        checksum ^= 0xFE ;
+        checksum ^= (byte)(msgFunction>>8);
+        checksum ^= (byte)(mmsgPayloadLengt >> 0);
+    }
+    */
 }
