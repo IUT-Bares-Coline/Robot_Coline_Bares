@@ -111,15 +111,97 @@ namespace projetrobotCB
             }
             serialPort1.Write(byteList, 0, byteList.Length);
         }
+
+        private byte CalculateChecksum(ushort msgFunction, ushort msgPayloadLength, byte[] msgPayload)
+        {
+
+            byte checksum = 0;
+            checksum ^= 0xFE;
+            checksum ^= (byte)(msgFunction >> 8);
+            checksum ^= (byte)(msgFunction >> 0);
+            checksum ^= (byte)(msgPayloadLength >> 8);
+            checksum ^= (byte)(msgPayloadLength >> 0);
+
+            foreach (byte b in msgPayload)
+            {
+                checksum ^= b;
+            }
+
+            return checksum;
+
+            /*
+            int checksum = 0;
+            checksum ^= 0xFE ;
+            checksum ^= (byte)(msgFunction>>8);
+            checksum ^= (byte)(msgPayloadLength >> 8);
+
+            for (int i= 0; i< msgPayloadLength; i++)
+            {
+                //checksum ^= msgPayload[i] >> 8;
+            }
+            */
+
+        }
+
+
+        public void UartEncodeAndSendMessage(ushort msgFunction, ushort msgPayloadLength, byte[] msgPayload)
+        {
+            byte[] message = new byte[6 + msgPayloadLength];
+
+            message[0] = 0xFE;
+            message[1] = (byte)(msgFunction >> 8);
+            message[2] = (byte)(msgFunction >> 0);
+            message[3] = (byte)(msgPayloadLength >> 8);
+            message[4] = (byte)(msgPayloadLength >> 0);
+
+            for (int i = 0; i < msgPayloadLength; i++)
+            {
+                message[5 + i] = msgPayload[i];
+            }
+
+            message[4 + msgPayloadLength] = CalculateChecksum(msgFunction, msgPayloadLength, msgPayload);
+        }
     }
 
-    /*
-    byte CalculateChecksum(int msgFunction, int msgPayloadLength, byte[] msgPayload )
-    {
-        int checksum = 0;
-        checksum ^= 0xFE ;
-        checksum ^= (byte)(msgFunction>>8);
-        checksum ^= (byte)(mmsgPayloadLengt >> 0);
-    }
-    */
+    
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+    private void uartEncodeAndSendMsg(ushort msg_func, ushort msg_payload_length, byte[] msg_payload)
+        {
+            int i = 0, j = 0;
+            byte[] msg = new byte[EMPTY_TRAME_SIZE + msg_payload_length];
+
+            msg[i++] = 0xFE;
+
+            msg[i++] = (byte)(msg_func >> 8);
+            msg[i++] = (byte)msg_func;
+
+            msg[i++] = (byte)(msg_payload_length >> 8);
+            msg[i++] = (byte)msg_payload_length;
+
+            for (j = 0; j < msg_payload_length; j++)
+                msg[i++] = msg_payload[j];
+
+            msg[i++] = calcChecksum(msg_func, msg_payload_length, msg_payload);
+
+            serialPort.Write(msg, 0, msg.Length);
+        }
+
+ */

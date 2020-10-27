@@ -11,4 +11,6 @@ namespace projetrobotCB
         public string receivedText = "";
         public Queue<byte> receivedBytes = new Queue<byte>();
     }
+
+    
 }
