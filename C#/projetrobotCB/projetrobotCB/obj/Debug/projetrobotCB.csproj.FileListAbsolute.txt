@@ -44,3 +44,4 @@ C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\obj\Debug\projetrobo
 C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\obj\Debug\projetrobotCB.csproj.CopyComplete
 C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\obj\Debug\projetrobotCB.exe
 C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\obj\Debug\projetrobotCB.pdb
+C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\obj\Debug\projetrobotCB.csproj.CoreCompileInputs.cache

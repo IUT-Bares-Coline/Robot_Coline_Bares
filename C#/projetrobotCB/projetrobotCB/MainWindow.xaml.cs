@@ -35,7 +35,7 @@ namespace projetrobotCB
             timerAffichage.Tick += TimerAffichage_Tick;
             timerAffichage.Start();
 
-            serialPort1 = new ReliableSerialPort("COM4", 115200, System.IO.Ports.Parity.None, 8, System.IO.Ports.StopBits.One);
+            serialPort1 = new ReliableSerialPort("COM5", 115200, System.IO.Ports.Parity.None, 8, System.IO.Ports.StopBits.One);
             serialPort1.DataReceived += SerialPort1_DataReceived;
             serialPort1.Open();
         }
@@ -103,6 +103,7 @@ namespace projetrobotCB
 
         private void ButtonTest_Click(object sender, RoutedEventArgs e)
         {
+            /*
             int i;                       
             byte[] byteList = new byte[20];
             for (i = 0; i < 20; i++)
@@ -110,6 +111,12 @@ namespace projetrobotCB
                 byteList[i] = (byte)(2 * i);
             }
             serialPort1.Write(byteList, 0, byteList.Length);
+            */
+
+            string s = "Bonjour";
+            byte[] array = Encoding.ASCII.GetBytes(s);
+            UartEncodeAndSendMessage(0x0080, (UInt16)array.Length, array);
+            
         }
 
         private byte CalculateChecksum(ushort msgFunction, ushort msgPayloadLength, byte[] msgPayload)
@@ -147,24 +154,106 @@ namespace projetrobotCB
         public void UartEncodeAndSendMessage(ushort msgFunction, ushort msgPayloadLength, byte[] msgPayload)
         {
             byte[] message = new byte[6 + msgPayloadLength];
-
-            message[0] = 0xFE;
-            message[1] = (byte)(msgFunction >> 8);
-            message[2] = (byte)(msgFunction >> 0);
-            message[3] = (byte)(msgPayloadLength >> 8);
-            message[4] = (byte)(msgPayloadLength >> 0);
+            int pos = 0;
+            message[pos++] = 0xFE;
+            message[pos++] = (byte)(msgFunction >> 8);
+            message[pos++] = (byte)(msgFunction >> 0);
+            message[pos++] = (byte)(msgPayloadLength >> 8);
+            message[pos++] = (byte)(msgPayloadLength >> 0);
 
             for (int i = 0; i < msgPayloadLength; i++)
             {
-                message[5 + i] = msgPayload[i];
+                message[pos++] = msgPayload[i];
             }
 
-            message[4 + msgPayloadLength] = CalculateChecksum(msgFunction, msgPayloadLength, msgPayload);
+            message[pos++] = CalculateChecksum(msgFunction, msgPayloadLength, msgPayload);
+            
+            serialPort1.Write(message, 0, pos);
         }
+
+        public enum StateReception
+        {
+            Waiting ,
+            FunctionMSB ,
+            FunctionLSB ,
+            PayloadLengthMSB ,
+            PayloadLengthLSB ,
+            Payload ,
+            CheckSum
+        }
+        
+        StateReception rcvState = StateReception.Waiting ;
+        int msgDecodedFunction = 0;
+        int msgDecodedPayloadLength = 0;
+        byte[] msgDecodedPayload ;
+        int msgDecodedPayloadIndex = 0;
+        
+        private void DecodeMessage(byte c)
+        {
+            switch (rcvState )
+            {
+                case StateReception.Waiting:
+
+                    if (c == 0xFE) rcvState = StateReception.FunctionMSB;
+                    break;
+
+                case StateReception.FunctionMSB:
+
+                    msgDecodedFunction = c << 8;
+                    rcvState = StateReception.FunctionLSB;
+                    break;
+
+                case StateReception.FunctionLSB:
+
+                    msgDecodedFunction += c ;
+                    rcvState = StateReception.PayloadLengthMSB;
+                    break;
+
+                case StateReception.PayloadLengthMSB:
+
+                    msgDecodedPayloadLength = c << 8;
+                    rcvState = StateReception.PayloadLengthLSB;
+                    break;
+
+                case StateReception.PayloadLengthLSB:
+                    
+                    msgDecodedPayloadLength += c;
+                    rcvState = StateReception.Payload;
+                    break;
+
+                case StateReception.Payload:
+
+                    msgDecodedPayload = c ;            //à verifier
+                    for(int i=0; i< msgDecodedPayloadLength/8; i++)
+                    {
+                        msgDecodedPayload += c << 8;
+                    }
+                    rcvState = StateReception.CheckSum;
+                    break;
+
+                case StateReception.CheckSum:
+
+                    byte calculatedChecksum = CalculateChecksum((ushort)msgDecodedFunction, (ushort)msgDecodedPayloadLength, msgDecodedPayload);
+                    byte receivedChecksum = c;
+
+                    if (calculatedChecksum == receivedChecksum )
+                        {
+                        // Success , on a un message valide
+                        }
+                    . . .
+                    break;
+                default:
+                    rcvState = StateReception.Waiting;
+                    break;
+            }
+
+
     }
 
-    
-    
+
+
+
+
 }
 
 
@@ -181,27 +270,3 @@ namespace projetrobotCB
 
 
 
-/*
-
-    private void uartEncodeAndSendMsg(ushort msg_func, ushort msg_payload_length, byte[] msg_payload)
-        {
-            int i = 0, j = 0;
-            byte[] msg = new byte[EMPTY_TRAME_SIZE + msg_payload_length];
-
-            msg[i++] = 0xFE;
-
-            msg[i++] = (byte)(msg_func >> 8);
-            msg[i++] = (byte)msg_func;
-
-            msg[i++] = (byte)(msg_payload_length >> 8);
-            msg[i++] = (byte)msg_payload_length;
-
-            for (j = 0; j < msg_payload_length; j++)
-                msg[i++] = msg_payload[j];
-
-            msg[i++] = calcChecksum(msg_func, msg_payload_length, msg_payload);
-
-            serialPort.Write(msg, 0, msg.Length);
-        }
-
- */

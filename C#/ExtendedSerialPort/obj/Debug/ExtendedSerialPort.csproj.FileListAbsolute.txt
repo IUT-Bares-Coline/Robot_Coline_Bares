@@ -14,3 +14,4 @@ C:\GitHub\Robot_Coline_Bares\C#\ExtendedSerialPort\bin\Debug\ExtendedSerialPort.
 C:\GitHub\Robot_Coline_Bares\C#\ExtendedSerialPort\obj\Debug\ExtendedSerialPort.csprojAssemblyReference.cache
 C:\GitHub\Robot_Coline_Bares\C#\ExtendedSerialPort\obj\Debug\ExtendedSerialPort.dll
 C:\GitHub\Robot_Coline_Bares\C#\ExtendedSerialPort\obj\Debug\ExtendedSerialPort.pdb
+C:\GitHub\Robot_Coline_Bares\C#\ExtendedSerialPort\obj\Debug\ExtendedSerialPort.csproj.CoreCompileInputs.cache
