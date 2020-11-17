@@ -24,7 +24,7 @@ namespace projetrobotCB
     {
         Robot robot = new Robot();
         ReliableSerialPort serialPort1;
-        DispatcherTimer timerAffichage ;
+        DispatcherTimer timerAffichage;
 
         public MainWindow()
         {
@@ -35,7 +35,7 @@ namespace projetrobotCB
             timerAffichage.Tick += TimerAffichage_Tick;
             timerAffichage.Start();
 
-            serialPort1 = new ReliableSerialPort("COM5", 115200, System.IO.Ports.Parity.None, 8, System.IO.Ports.StopBits.One);
+            serialPort1 = new ReliableSerialPort("COM6", 115200, System.IO.Ports.Parity.None, 8, System.IO.Ports.StopBits.One);
             serialPort1.DataReceived += SerialPort1_DataReceived;
             serialPort1.Open();
         }
@@ -43,27 +43,28 @@ namespace projetrobotCB
         private void TimerAffichage_Tick(object sender, EventArgs e)
         {
             //throw new NotImplementedException();
-            while(robot.receivedBytes.Count>0)
+            while (robot.MessageQueue.Count > 0)
             {
-                byte b = robot.receivedBytes.Dequeue();
-                textBoxReception.Text += " 0x" + b.ToString("X2");
+                Message m;
+                if (robot.MessageQueue.TryDequeue(out m))
+                {
+                    foreach (var b in m.Payload)
+                    {
+                        textBoxReception.Text += " 0x" + b.ToString("X2");
+                    }
+                    textBoxReception.Text += "\n";
+                }
+
             }
-            //if (robot.receivedText != null)
-            //{
-            //    textBoxReception.Text = textBoxReception.Text + "Reçu : " + robot.receivedText;
-            //    robot.receivedText = null;
-            //}
-            
         }
 
-        public void SerialPort1_DataReceived(object sender, DataReceivedArgs e)
+        public void SerialPort1_DataReceived(object sender, DataReceivedArgs e) //FIFO??
         {
-            foreach(byte b in e.Data)
+            foreach (byte b in e.Data)
             {
-                robot.receivedBytes.Enqueue(b);
+                DecodeMessage(b);
             }
-            //robot.receivedText += Encoding.UTF8.GetString(e.Data, 0, e.Data.Length);            
-            //textBoxReception.Text += Encoding.UTF8.GetString(e.Data, 0, e.Data.Length) ;
+           
         }
 
         private void SendMessage()
@@ -74,22 +75,22 @@ namespace projetrobotCB
 
         private void buttonEnvoyer_Click(object sender, RoutedEventArgs e)
         {
-         if(buttonEnvoyer.Background == Brushes.RoyalBlue) 
+            if (buttonEnvoyer.Background == Brushes.RoyalBlue)
             {
                 buttonEnvoyer.Background = Brushes.Beige;
             }
-         else
+            else
             {
                 buttonEnvoyer.Background = Brushes.RoyalBlue;
             }
-            
+
             SendMessage();
         }
 
         private void textBoxEmission_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter) 
-            { 
+            if (e.Key == Key.Enter)
+            {
                 SendMessage();
             }
 
@@ -97,26 +98,16 @@ namespace projetrobotCB
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            textBoxReception.Text = null; 
+            textBoxReception.Text = null;
         }
 
 
         private void ButtonTest_Click(object sender, RoutedEventArgs e)
         {
-            /*
-            int i;                       
-            byte[] byteList = new byte[20];
-            for (i = 0; i < 20; i++)
-            {
-                byteList[i] = (byte)(2 * i);
-            }
-            serialPort1.Write(byteList, 0, byteList.Length);
-            */
-
             string s = "Bonjour";
             byte[] array = Encoding.ASCII.GetBytes(s);
             UartEncodeAndSendMessage(0x0080, (UInt16)array.Length, array);
-            
+
         }
 
         private byte CalculateChecksum(ushort msgFunction, ushort msgPayloadLength, byte[] msgPayload)
@@ -133,23 +124,8 @@ namespace projetrobotCB
             {
                 checksum ^= b;
             }
-
             return checksum;
-
-            /*
-            int checksum = 0;
-            checksum ^= 0xFE ;
-            checksum ^= (byte)(msgFunction>>8);
-            checksum ^= (byte)(msgPayloadLength >> 8);
-
-            for (int i= 0; i< msgPayloadLength; i++)
-            {
-                //checksum ^= msgPayload[i] >> 8;
-            }
-            */
-
         }
-
 
         public void UartEncodeAndSendMessage(ushort msgFunction, ushort msgPayloadLength, byte[] msgPayload)
         {
@@ -167,30 +143,30 @@ namespace projetrobotCB
             }
 
             message[pos++] = CalculateChecksum(msgFunction, msgPayloadLength, msgPayload);
-            
+
             serialPort1.Write(message, 0, pos);
         }
 
         public enum StateReception
         {
-            Waiting ,
-            FunctionMSB ,
-            FunctionLSB ,
-            PayloadLengthMSB ,
-            PayloadLengthLSB ,
-            Payload ,
+            Waiting,
+            FunctionMSB,
+            FunctionLSB,
+            PayloadLengthMSB,
+            PayloadLengthLSB,
+            Payload,
             CheckSum
         }
-        
-        StateReception rcvState = StateReception.Waiting ;
-        int msgDecodedFunction = 0;
-        int msgDecodedPayloadLength = 0;
-        byte[] msgDecodedPayload ;
+
+        StateReception rcvState = StateReception.Waiting;
+        UInt16 msgDecodedFunction = 0;
+        UInt16 msgDecodedPayloadLength = 0;
+        byte[] msgDecodedPayload;
         int msgDecodedPayloadIndex = 0;
-        
+
         private void DecodeMessage(byte c)
         {
-            switch (rcvState )
+            switch (rcvState)
             {
                 case StateReception.Waiting:
 
@@ -199,36 +175,45 @@ namespace projetrobotCB
 
                 case StateReception.FunctionMSB:
 
-                    msgDecodedFunction = c << 8;
+                    msgDecodedFunction = (UInt16)(c << 8);
                     rcvState = StateReception.FunctionLSB;
                     break;
 
                 case StateReception.FunctionLSB:
 
-                    msgDecodedFunction += c ;
+                    msgDecodedFunction += c;
                     rcvState = StateReception.PayloadLengthMSB;
                     break;
 
                 case StateReception.PayloadLengthMSB:
 
-                    msgDecodedPayloadLength = c << 8;
+                    msgDecodedPayloadLength = (UInt16)(c << 8);
                     rcvState = StateReception.PayloadLengthLSB;
                     break;
 
                 case StateReception.PayloadLengthLSB:
-                    
+
                     msgDecodedPayloadLength += c;
-                    rcvState = StateReception.Payload;
+                    if (msgDecodedPayloadLength == 0)
+                    {
+                        rcvState = StateReception.CheckSum;
+                    }
+                    else if (msgDecodedPayloadLength < 1024)
+                    {
+                        rcvState = StateReception.Payload;
+                        msgDecodedPayload = new byte[msgDecodedPayloadLength];
+                        msgDecodedPayloadIndex = 0;
+                    }
+                    else
+                    {
+                        rcvState = StateReception.Waiting;
+                    }
                     break;
 
                 case StateReception.Payload:
-
-                    msgDecodedPayload = c ;            //à verifier
-                    for(int i=0; i< msgDecodedPayloadLength/8; i++)
-                    {
-                        msgDecodedPayload += c << 8;
-                    }
-                    rcvState = StateReception.CheckSum;
+                    msgDecodedPayload[msgDecodedPayloadIndex++] = c;
+                    if (msgDecodedPayloadIndex >= msgDecodedPayloadLength)
+                        rcvState = StateReception.CheckSum;
                     break;
 
                 case StateReception.CheckSum:
@@ -236,24 +221,25 @@ namespace projetrobotCB
                     byte calculatedChecksum = CalculateChecksum((ushort)msgDecodedFunction, (ushort)msgDecodedPayloadLength, msgDecodedPayload);
                     byte receivedChecksum = c;
 
-                    if (calculatedChecksum == receivedChecksum )
-                        {
+                    if (calculatedChecksum == receivedChecksum)
+                    {
                         // Success , on a un message valide
-                        }
-                    . . .
+                        robot.MessageQueue.Enqueue(new Message(msgDecodedFunction, msgDecodedPayloadLength, msgDecodedPayload));
+                    }
+                    else
+                    {
+                        Console.WriteLine("Erreur de décodage de message");
+                    }
+                    rcvState = StateReception.Waiting;
+
                     break;
+
                 default:
                     rcvState = StateReception.Waiting;
                     break;
             }
-
-
+        }
     }
-
-
-
-
-
 }
 
 

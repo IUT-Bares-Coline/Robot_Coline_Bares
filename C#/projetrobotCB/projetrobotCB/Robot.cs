@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,8 +10,22 @@ namespace projetrobotCB
     class Robot
     {
         public string receivedText = "";
-        public Queue<byte> receivedBytes = new Queue<byte>();
+        public ConcurrentQueue<Message> MessageQueue = new ConcurrentQueue<Message>();
     }
 
-    
+    //class message 
+    //queue differente --> changer code
+    class Message
+    {
+        public UInt16 PayloadLength;
+        public UInt16 Function;
+        public byte[] Payload;
+
+        public Message(UInt16 function, UInt16 payloadLength, byte[] payload)
+        {
+            PayloadLength = payloadLength;
+            Function = function;
+            Payload = payload;
+        }
+    }
 }
