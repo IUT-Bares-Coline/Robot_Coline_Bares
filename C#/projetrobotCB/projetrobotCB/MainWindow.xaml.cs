@@ -20,6 +20,17 @@ namespace projetrobotCB
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml
     /// </summary>
+    /// 
+
+    public enum MsgFunctions
+    {
+        TextTransmission = 0x0080,
+        LEDSetUp = 0x0020,
+        IRDistance = 0x0030,
+        SpeedSetUp = 0x0040
+    }
+
+
     public partial class MainWindow : Window
     {
         Robot robot = new Robot();
@@ -48,11 +59,12 @@ namespace projetrobotCB
                 Message m;
                 if (robot.MessageQueue.TryDequeue(out m))
                 {
-                    foreach (var b in m.Payload)
-                    {
-                        textBoxReception.Text += " 0x" + b.ToString("X2");
-                    }
-                    textBoxReception.Text += "\n";
+                    ProcessDecodedMessage(m.Function, m.PayloadLength, m.Payload);
+                    //foreach (var b in m.Payload)
+                    //{
+                    //    textBoxReception.Text += " 0x" + b.ToString("X2");
+                    //}
+                    //textBoxReception.Text += "\n";
                 }
 
             }
@@ -64,7 +76,9 @@ namespace projetrobotCB
             {
                 DecodeMessage(b);
             }
-           
+
+
+
         }
 
         private void SendMessage()
@@ -106,8 +120,12 @@ namespace projetrobotCB
         {
             string s = "Bonjour";
             byte[] array = Encoding.ASCII.GetBytes(s);
-            UartEncodeAndSendMessage(0x0080, (UInt16)array.Length, array);
+            UartEncodeAndSendMessage((ushort)MsgFunctions.TextTransmission, (UInt16)array.Length, array);
+            UartEncodeAndSendMessage((ushort)MsgFunctions.LEDSetUp, 2, new byte[] { 1, 1 });
+            UartEncodeAndSendMessage((ushort)MsgFunctions.IRDistance, 3, new byte[] { 10, 20, 50 });
+            UartEncodeAndSendMessage((ushort)MsgFunctions.SpeedSetUp, 2, new byte[] { 50, 20 });
 
+            //UartEncodeAndSendMessage(0x0080, (UInt16)array.Length, array);
         }
 
         private byte CalculateChecksum(ushort msgFunction, ushort msgPayloadLength, byte[] msgPayload)
@@ -236,6 +254,58 @@ namespace projetrobotCB
 
                 default:
                     rcvState = StateReception.Waiting;
+                    break;
+            }
+
+        }
+
+        void ProcessDecodedMessage(int msgFunction, int msgPayloadLength, byte[] msgPayload)
+        {
+            switch ((MsgFunctions)msgFunction)
+            {
+                case MsgFunctions.TextTransmission:
+                    break;
+                case MsgFunctions.LEDSetUp:
+                    int numLed = msgPayload[0];
+                    int ledState = msgPayload[1];
+                    switch (numLed)
+                    {
+                        case 1:
+                            if (ledState == 1)
+                            {
+                                led1.IsChecked = true;
+                            }
+                            else led1.IsChecked = false;
+                            break;
+                        case 2:
+                            if (ledState == 1)
+                            {
+                                led2.IsChecked = true;
+                            }
+                            else led2.IsChecked = false;
+                            break;
+                        case 3:
+                            if (ledState == 1)
+                            {
+                                led3.IsChecked = true;
+                            }
+                            else led3.IsChecked = false;
+                            break;
+                    }
+                    break;
+                case MsgFunctions.IRDistance:
+                    int gauche = msgPayload[0];
+                    labelTelemetreGauche.Content = "Telemètre gauche : " + gauche.ToString() + " cm";
+                    int centre = msgPayload[1];
+                    labelTelemetreCentre.Content = "Telemètre centre : " + centre.ToString() + " cm";
+                    int droite = msgPayload[2];
+                    labelTelemetreDroit.Content = "Telemètre droit : " + droite.ToString() + " cm";
+                    break;
+                case MsgFunctions.SpeedSetUp:
+                    int moteurG = msgPayload[0];
+                    labelVitesseG.Content = "Vitesse moteur gauche : " + moteurG.ToString() + " cm";
+                    int moteurD = msgPayload[1];
+                    labelVitesseD.Content = "Vitesse moteur droit : " + moteurD.ToString() + " cm";
                     break;
             }
         }
