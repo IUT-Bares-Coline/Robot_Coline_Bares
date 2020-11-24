@@ -1,81 +1,145 @@
 #include <xc.h>
 #include "UART_Protocol.h"
+#include "CB_TX1.h"
+
+unsigned char UartCalculateChecksum(int msgFunction, int msgPayloadLength, unsigned char* msgPayload) {
+    // Fonction prenant entree la trame et sa longueur pour calculerle checksum
+
+    //c# :
+    char checksum = 0;
+    checksum ^= 0xFE;
+    checksum ^= (unsigned char) (msgFunction >> 8);
+    checksum ^= (unsigned char) (msgFunction >> 0);
+    checksum ^= (unsigned char) (msgPayloadLength >> 8);
+    checksum ^= (unsigned char) (msgPayloadLength >> 0);
 
 
-unsigned char UartCalculateChecksum(int msgFunction, int msgPayloadLength, unsigned char* msgPayload)
-{
-// Fonction prenant entree la trame et sa longueur pour calculerle checksum
-/*
- c# :
-         private byte CalculateChecksum(ushort msgFunction, ushort msgPayloadLength, byte[] msgPayload)
-        {
+    //for(int i=0; i<sizeof(msgPayload)); i++)      <-- beautiful [petit smiley papillon]
+    int i = 0;
+    for (i = 0; i < msgPayloadLength; i++) {
+        checksum ^= msgPayload[i];
+    }
+    return checksum;
 
-            byte checksum = 0;
-            checksum ^= 0xFE;
-            checksum ^= (byte)(msgFunction >> 8);
-            checksum ^= (byte)(msgFunction >> 0);
-            checksum ^= (byte)(msgPayloadLength >> 8);
-            checksum ^= (byte)(msgPayloadLength >> 0);
-
-            foreach (byte b in msgPayload)
-            {
-                checksum ^= b;
-            }
-            return checksum;
-        }
- */
 }
 
+void UartEncodeAndSendMessage(int msgFunction, int msgPayloadLength, unsigned char* msgPayload) {
+    // Fonction d?encodage et d?envoi d?un message
 
-void UartEncodeAndSendMessage(int msgFunction, int msgPayloadLength, unsigned char* msgPayload)
-{
-// Fonction d?encodage et d?envoi d?un message
-/*
- c# :
- public void UartEncodeAndSendMessage(ushort msgFunction, ushort msgPayloadLength, byte[] msgPayload)
-        {
-            byte[] message = new byte[6 + msgPayloadLength];
-            int pos = 0;
-            message[pos++] = 0xFE;
-            message[pos++] = (byte)(msgFunction >> 8);
-            message[pos++] = (byte)(msgFunction >> 0);
-            message[pos++] = (byte)(msgPayloadLength >> 8);
-            message[pos++] = (byte)(msgPayloadLength >> 0);
+    unsigned char message[6 + msgPayloadLength];
+    int pos = 0;
+    message[pos++] = 0xFE;
+    message[pos++] = (unsigned char) (msgFunction >> 8);
+    message[pos++] = (unsigned char) (msgFunction >> 0);
+    message[pos++] = (unsigned char) (msgPayloadLength >> 8);
+    message[pos++] = (unsigned char) (msgPayloadLength >> 0);
 
-            for (int i = 0; i < msgPayloadLength; i++)
-            {
-                message[pos++] = msgPayload[i];
-            }
+    int i = 0;
+    for (i = 0; i < msgPayloadLength; i++) {
+        message[pos++] = msgPayload[i];
+    }
 
-            message[pos++] = CalculateChecksum(msgFunction, msgPayloadLength, msgPayload);
+    message[pos++] = UartCalculateChecksum(msgFunction, msgPayloadLength, msgPayload);
 
-            serialPort1.Write(message, 0, pos);
-        }
- */
-    
+    SendMessage(message, msgPayloadLength);
+    //serialPort1.Write(message, 0, pos);
 }
 
+/*
+enum StateReception
+    {
+    Waiting,
+    FunctionMSB,
+    FunctionLSB,
+    PayloadLengthMSB,
+    PayloadLengthLSB,
+    Payload,
+    CheckSum
+    };
+ */
+#define MAX_MSG_PAYLOAD_LENGTH 128
 
 int msgDecodedFunction = 0;
 int msgDecodedPayloadLength = 0;
-unsigned char msgDecodedPayload [ 1 2 8 ];
-int msgDecodedPayloadIndex = 0 ;
+unsigned char msgDecodedPayload[MAX_MSG_PAYLOAD_LENGTH];
+int msgDecodedPayloadIndex = 0;
+unsigned char rcvState;
 
-/*
-void UartDecodeMessage(unsigned char c )
-{
-// F onc ti on p ren an t en e n t r e e un o c t e t e t s e r v a n t a r e c o n s t i t u e r l e s trames
-. . .
+void UartDecodeMessage(unsigned char c) {
+    // Fonction prenant en entree un octet et servant a reconstituer les trames
+
+    switch (rcvState) {
+        case Waiting:
+
+            if (c == 0xFE) rcvState = FunctionMSB;
+            break;
+
+        case FunctionMSB:
+
+            msgDecodedFunction = (short) (c << 8);
+            rcvState = FunctionLSB;
+            break;
+
+        case FunctionLSB:
+
+            msgDecodedFunction += c;
+            rcvState = PayloadLengthMSB;
+            break;
+
+        case PayloadLengthMSB:
+
+            msgDecodedPayloadLength = (short) (c << 8);
+            rcvState = PayloadLengthLSB;
+            break;
+
+        case PayloadLengthLSB:
+
+            msgDecodedPayloadLength += c;
+            if (msgDecodedPayloadLength == 0) {
+                rcvState = CheckSum;
+            } else if (msgDecodedPayloadLength < MAX_MSG_PAYLOAD_LENGTH) {
+                rcvState = Payload;
+                msgDecodedPayloadIndex = 0;
+            } else {
+                rcvState = Waiting;
+            }
+            break;
+
+        case Payload:
+            msgDecodedPayload[msgDecodedPayloadIndex++] = c;
+            if (msgDecodedPayloadIndex >= msgDecodedPayloadLength)
+                rcvState = CheckSum;
+            break;
+
+        case CheckSum:
+        {
+            unsigned char calculatedChecksum = UartCalculateChecksum((short) msgDecodedFunction, (short) msgDecodedPayloadLength, msgDecodedPayload);
+            unsigned char receivedChecksum = c;
+
+            if (calculatedChecksum == receivedChecksum) {
+                // Success , on a un message valide
+                ProcessDecodedMessage(msgDecodedFunction, msgDecodedPayloadLength, msgDecodedPayload);
+                //robot.MessageQueue.Enqueue(new Message(msgDecodedFunction, msgDecodedPayloadLength, msgDecodedPayload));
+
+            } else {
+                //printf("Erreur de décodage de message");  //????
+            }
+            rcvState = Waiting;
+        }
+
+            break;
+
+        default:
+            rcvState = Waiting;
+            break;
+    }
 }
 
-
-void UartProcessDecodedMessage ( int function, int payloadLength , unsigned char* payload)
+void ProcessDecodedMessage(short function, short payloadLength, unsigned char* payload) 
 {
-// F onc ti on a p p el e e a p r e s l e decodage pour e x e c u t e r l ? a c ti o n
-// c o r r e s p o n d a n t au message r e c u
-. . .
+
 }
-*/
+
 
 // ????????????????????????????????????????????????????????????????????????? /
 // F o n c ti o n s c o r r e s p o n d a n t aux me s sage s
