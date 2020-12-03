@@ -46,7 +46,9 @@ void __attribute__ ((interrupt, no_auto_psv)) _U1TXInterrupt (void) {
         SendOne ( ) ;
     }
     else
+    {
         isTransmitting = 0 ;
+    }
 }
 
 void SendOne ( )
@@ -63,11 +65,14 @@ unsigned char CB_TX1_IsTransmitting ( void)
 
 int CB_TX1_GetDataSize (void)
 {
-    if(cbTx1Head > cbTx1Tail){
+    if(cbTx1Head > cbTx1Tail)
+    {
         return cbTx1Head-cbTx1Tail;
     }
     else 
+    {
         return CBTX1_BUFFER_SIZE -(cbTx1Tail-cbTx1Head);
+    }
 }
 
 int CB_TX1_RemainingSize (void)

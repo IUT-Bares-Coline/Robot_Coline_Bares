@@ -264,6 +264,7 @@ namespace projetrobotCB
             switch ((MsgFunctions)msgFunction)
             {
                 case MsgFunctions.TextTransmission:
+                    textBoxReception.Text += msgPayload + "\n";
                     break;
                 case MsgFunctions.LEDSetUp:
                     int numLed = msgPayload[0];
