@@ -93,8 +93,7 @@ void InitTimer1(void) {
 //}
 
 void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void) {
-    IFS0bits.T1IF = 0;
-    //LED_BLEUE = !LED_BLEUE;
+    IFS0bits.T1IF = 0;    
     PWMUpdateSpeed();
     ADC1StartConversionSequence();
 
@@ -147,16 +146,16 @@ void SetFreqTimer4(float freq)
             if(FCY /freq / 64 > 65535)
             {
             T4CONbits.TCKPS = 0b11; //11 = 1:256 prescaler value
-            PR1 = (int)(FCY / freq / 256);
+            PR4 = (int)(FCY / freq / 256);
             }
             else
-            PR1 = (int)(FCY / freq / 64);
+            PR4 = (int)(FCY / freq / 64);
         }
         else
-        PR1 = (int)(FCY / freq / 8);
+        PR4 = (int)(FCY / freq / 8);
     }
     else
-    PR1 = (int)(FCY / freq);
+    PR4 = (int)(FCY / freq);
 }
 
 unsigned long timestamp;

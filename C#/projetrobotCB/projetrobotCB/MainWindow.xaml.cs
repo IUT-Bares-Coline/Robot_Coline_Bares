@@ -27,7 +27,8 @@ namespace projetrobotCB
         TextTransmission = 0x0080,
         LEDSetUp = 0x0020,
         IRDistance = 0x0030,
-        SpeedSetUp = 0x0040
+        SpeedSetUp = 0x0040,
+        ChangeState = 0x0050
     }
 
 
@@ -70,7 +71,7 @@ namespace projetrobotCB
             }
         }
 
-        public void SerialPort1_DataReceived(object sender, DataReceivedArgs e) //FIFO??
+        public void SerialPort1_DataReceived(object sender, DataReceivedArgs e) //FIFO
         {
             foreach (byte b in e.Data)
             {
@@ -264,7 +265,7 @@ namespace projetrobotCB
             switch ((MsgFunctions)msgFunction)
             {
                 case MsgFunctions.TextTransmission:
-                    textBoxReception.Text += msgPayload + "\n";
+                    textBoxReception.Text += Encoding.UTF8.GetString(msgPayload, 0, msgPayload.Length)+"\n";
                     break;
                 case MsgFunctions.LEDSetUp:
                     int numLed = msgPayload[0];
@@ -308,8 +309,13 @@ namespace projetrobotCB
                     int moteurD = msgPayload[1];
                     labelVitesseD.Content = "Vitesse moteur droit : " + moteurD.ToString() + " cm";
                     break;
+                case MsgFunctions.ChangeState:
+
+                    break;
             }
         }
+
+        // pt d'arret : f5 = pt d'arret suivant - f10 = pas a pas - f9 = mettre un pt d'arret
     }
 }
 

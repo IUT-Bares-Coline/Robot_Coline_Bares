@@ -78,35 +78,37 @@ int main(void) {
             } else {
                 LED_BLANCHE = 0;
             }
+            
+            //unsigned char msgPayload[] = {'B', 'o', 'n', 'j', 'o', 'u', 'r',};
+            //UartEncodeAndSendMessage(0x0080, 7, msgPayload);
+            
+            //unsigned char msgPayload1[] = {1, 1};
+            //UartEncodeAndSendMessage(0x0020, 2, msgPayload1);
+            
+            unsigned char msgPayload1[] = {robotState.distanceTelemetreGauche, robotState.distanceTelemetreCentre, robotState.distanceTelemetreDroit};
+            UartEncodeAndSendMessage(0x0030, 3, msgPayload1);
+            
         }
+        
+        
         //SendMessageDirect((unsigned char*)"bonjour",7);
         //__delay32(4000000);
         //SendMessage((unsigned char*) "bonjour", 7);
         
-        
+        /*
         int i;
         for(i=0; i<CB_RX1_GetDataSize(); i++){
             unsigned char c = CB_RX1_Get();
             SendMessage(&c, 1);
         }
         __delay32(1000);
-        
-        
-        /*
-        unsigned char msgPayload[] = {'B', 'o', 'n', 'j', 'o', 'u', 'r',};
-        UartEncodeAndSendMessage(0x0080, 7, msgPayload);
-        __delay32(40000000/2);
         */
         
-        unsigned char msgPayload[] = {'0', '1'};
-        UartEncodeAndSendMessage(0x0020, 2, msgPayload);
-        __delay32(40000000);
     }    
 }// fin main
     
 
 unsigned char stateRobot;
-
 
 
 void OperatingSystemLoop(void) {
@@ -126,6 +128,8 @@ void OperatingSystemLoop(void) {
             break;
 
         case STATE_AVANCE:
+            SendRobotState();
+            
             PWMSetSpeedConsigne(20, MOTEUR_DROIT);
             PWMSetSpeedConsigne(20, MOTEUR_GAUCHE);
             stateRobot = STATE_AVANCE_EN_COURS;
@@ -135,6 +139,8 @@ void OperatingSystemLoop(void) {
             break;
 
         case STATE_TOURNE_GAUCHE:
+            SendRobotState();
+            
             PWMSetSpeedConsigne(20, MOTEUR_DROIT); 
             PWMSetSpeedConsigne(0, MOTEUR_GAUCHE);
             stateRobot = STATE_TOURNE_GAUCHE_EN_COURS;
@@ -144,6 +150,8 @@ void OperatingSystemLoop(void) {
             break;
 
         case STATE_TOURNE_DROITE:
+            SendRobotState();
+            
             PWMSetSpeedConsigne(0, MOTEUR_DROIT);
             PWMSetSpeedConsigne(20, MOTEUR_GAUCHE);
             stateRobot = STATE_TOURNE_DROITE_EN_COURS;
@@ -153,6 +161,8 @@ void OperatingSystemLoop(void) {
             break;
 
         case STATE_TOURNE_SUR_PLACE_GAUCHE:
+            SendRobotState();
+            
             PWMSetSpeedConsigne(10, MOTEUR_DROIT);
             PWMSetSpeedConsigne(-10, MOTEUR_GAUCHE);
             stateRobot = STATE_TOURNE_SUR_PLACE_GAUCHE_EN_COURS;
@@ -162,6 +172,8 @@ void OperatingSystemLoop(void) {
             break;
 
         case STATE_TOURNE_SUR_PLACE_DROITE:
+            SendRobotState();
+            
             PWMSetSpeedConsigne(-10, MOTEUR_DROIT);
             PWMSetSpeedConsigne(10, MOTEUR_GAUCHE);
             stateRobot = STATE_TOURNE_SUR_PLACE_DROITE_EN_COURS;
@@ -181,7 +193,16 @@ void OperatingSystemLoop(void) {
     } 
 //}
 
-
+void SendRobotState()
+{
+    unsigned char payload[5];
+    payload[0] = (unsigned char)(timestamp>>24);
+    payload[1] = (unsigned char)(timestamp>>16);
+    payload[2] = (unsigned char)(timestamp>>8);
+    payload[3] = (unsigned char)(timestamp>>0);
+    payload[4] = stateRobot;
+    UartEncodeAndSendMessage(0x0050, 5, payload);
+}
 
 
 unsigned char nextStateRobot = 0;

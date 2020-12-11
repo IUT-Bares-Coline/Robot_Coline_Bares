@@ -65,7 +65,7 @@ unsigned char CB_TX1_IsTransmitting ( void)
 
 int CB_TX1_GetDataSize (void)
 {
-    if(cbTx1Head > cbTx1Tail)
+    if(cbTx1Head >= cbTx1Tail)
     {
         return cbTx1Head-cbTx1Tail;
     }

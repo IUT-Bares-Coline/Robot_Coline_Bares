@@ -41,7 +41,7 @@ void UartEncodeAndSendMessage(int msgFunction, int msgPayloadLength, unsigned ch
 
     message[pos++] = UartCalculateChecksum(msgFunction, msgPayloadLength, msgPayload);
 
-    SendMessage(message, msgPayloadLength);
+    SendMessage(message, msgPayloadLength+6);
     //serialPort1.Write(message, 0, pos);
 }
 
