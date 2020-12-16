@@ -103,7 +103,6 @@ int main(void) {
         }
         __delay32(1000);
         */
-        
     }    
 }// fin main
     
@@ -196,11 +195,12 @@ void OperatingSystemLoop(void) {
 void SendRobotState()
 {
     unsigned char payload[5];
-    payload[0] = (unsigned char)(timestamp>>24);
-    payload[1] = (unsigned char)(timestamp>>16);
-    payload[2] = (unsigned char)(timestamp>>8);
-    payload[3] = (unsigned char)(timestamp>>0);
-    payload[4] = stateRobot;
+    payload[0] = stateRobot;
+    payload[1] = (unsigned char)(timestamp>>24);
+    payload[2] = (unsigned char)(timestamp>>16);
+    payload[3] = (unsigned char)(timestamp>>8);
+    payload[4] = (unsigned char)(timestamp>>0);
+    
     UartEncodeAndSendMessage(0x0050, 5, payload);
 }
 
