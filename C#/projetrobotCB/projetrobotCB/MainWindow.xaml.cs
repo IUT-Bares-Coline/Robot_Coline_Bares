@@ -332,7 +332,7 @@ namespace projetrobotCB
                 case MsgFunctions.ChangeState:
                     int instant = (((int)msgPayload[1]) << 24) + (((int)msgPayload[2]) << 16) 
                     + (((int)msgPayload[3]) << 8) + ((int)msgPayload[4]);
-                    rtbReception.Content += " \nRobot State : " +
+                    textBoxReception.Text += " \nRobot State : " +
                     ((StateRobot)(msgPayload[0])).ToString() +" − " + instant.ToString() + " ms";
                     break;
             }

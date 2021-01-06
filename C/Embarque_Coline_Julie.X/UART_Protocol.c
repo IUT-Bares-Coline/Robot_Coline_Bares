@@ -41,31 +41,19 @@ void UartEncodeAndSendMessage(int msgFunction, int msgPayloadLength, unsigned ch
 
     message[pos++] = UartCalculateChecksum(msgFunction, msgPayloadLength, msgPayload);
 
-    SendMessage(message, msgPayloadLength+6);
+    SendMessage(message, msgPayloadLength + 6);
     //serialPort1.Write(message, 0, pos);
 }
 
-/*
-enum StateReception
-    {
-    Waiting,
-    FunctionMSB,
-    FunctionLSB,
-    PayloadLengthMSB,
-    PayloadLengthLSB,
-    Payload,
-    CheckSum
-    };
- */
+
 #define MAX_MSG_PAYLOAD_LENGTH 128
 
 int msgDecodedFunction = 0;
 int msgDecodedPayloadLength = 0;
 unsigned char msgDecodedPayload[MAX_MSG_PAYLOAD_LENGTH];
 int msgDecodedPayloadIndex = 0;
-unsigned char rcvState;
+StateReception rcvState;
 
-/*
 void UartDecodeMessage(unsigned char c) {
     // Fonction prenant en entree un octet et servant a reconstituer les trames
 
@@ -135,14 +123,22 @@ void UartDecodeMessage(unsigned char c) {
             break;
     }
 }
-
-void ProcessDecodedMessage(short function, short payloadLength, unsigned char* payload) 
+/*
+void UartProcessDecodedMessage (unsigned char function , unsigned char payloadLength , unsigned char payload [ ] )
 {
-
+// Fonction éappele après le décodage pour excuter l?action
+// c o r r e s p o n d a n t au message çreu
+switch(msgFunction)
+{
+case SET_ROBOT_STATE:
+SetRobotState( msgPayload [ 0 ] ) ;
+break ;
+case SET_ROBOT_MANUAL_CONTROL:
+SetRobotAutoControlState ( msgPayload [ 0 ] ) ;
+break ;
+default :
+break ;
 }
-
-
-// ????????????????????????????????????????????????????????????????????????? /
-// F o n c ti o n s c o r r e s p o n d a n t aux me s sage s
-// ????????????????????????????????????????????????????????????????????????? /
+}
 */
+

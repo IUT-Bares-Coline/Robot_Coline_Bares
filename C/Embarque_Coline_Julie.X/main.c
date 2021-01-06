@@ -88,6 +88,8 @@ int main(void) {
             unsigned char msgPayload1[] = {robotState.distanceTelemetreGauche, robotState.distanceTelemetreCentre, robotState.distanceTelemetreDroit};
             UartEncodeAndSendMessage(0x0030, 3, msgPayload1);
             
+            //UartDecodeMessage(unsigned char c);
+            
         }
         
         
