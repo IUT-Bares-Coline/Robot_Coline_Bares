@@ -41,6 +41,15 @@ int main(void) {
     //robotState.vitesseDroiteConsigne = 30;
 
 
+    void DecodeMessage()
+    {
+        if(CB_RX1_IsDataAvailable > 0)
+        {
+            char c = CB_RX1_Get();
+            UartDecodeMessage(c);
+        }
+    }
+    
 
     /****************************************************************************************************/
     // Boucle Principale
@@ -88,7 +97,7 @@ int main(void) {
             unsigned char msgPayload1[] = {robotState.distanceTelemetreGauche, robotState.distanceTelemetreCentre, robotState.distanceTelemetreDroit};
             UartEncodeAndSendMessage(0x0030, 3, msgPayload1);
             
-            //UartDecodeMessage(unsigned char c);
+            
             
         }
         

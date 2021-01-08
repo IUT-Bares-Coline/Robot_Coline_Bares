@@ -123,6 +123,11 @@ void UartDecodeMessage(unsigned char c) {
             break;
     }
 }
+
+int GetDecodedFunction()
+{
+    return msgDecodedFunction;
+}
 /*
 void UartProcessDecodedMessage (unsigned char function , unsigned char payloadLength , unsigned char payload [ ] )
 {

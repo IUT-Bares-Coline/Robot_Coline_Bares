@@ -23,6 +23,6 @@ unsigned char UartCalculateChecksum(int msgFunction, int msgPayloadLength, unsig
 void UartEncodeAndSendMessage(int msgFunction, int msgPayloadLength, unsigned char* msgPayload);
 void UartDecodeMessage(unsigned char c);
 void ProcessDecodedMessage(short function, short payloadLength, unsigned char* payload);
-
+void GetDecodedFunction(void);
 #endif	/* UART_PROTOCOL_H */
 
