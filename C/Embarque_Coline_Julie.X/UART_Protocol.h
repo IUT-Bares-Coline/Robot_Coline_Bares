@@ -9,6 +9,16 @@
 #define	UART_PROTOCOL_H
 
 
+#define SET_ROBOT_STATE 0x0051
+#define SET_ROBOT_MANUAL_CONTROL 0x0052
+
+/*
+typedef enum{
+    SET_ROBOT_STATE,
+    SET_ROBOT_MANUAL_CONTROL
+}SetRobot;
+ */
+
 typedef enum{
     Waiting,
     FunctionMSB,
@@ -22,7 +32,9 @@ typedef enum{
 unsigned char UartCalculateChecksum(int msgFunction, int msgPayloadLength, unsigned char* msgPayload);
 void UartEncodeAndSendMessage(int msgFunction, int msgPayloadLength, unsigned char* msgPayload);
 void UartDecodeMessage(unsigned char c);
-void ProcessDecodedMessage(short function, short payloadLength, unsigned char* payload);
-void GetDecodedFunction(void);
+void ProcessDecodedMessage(unsigned char function, unsigned char payloadLength, unsigned char* payload);
+int GetDecodedFunction(void);
 #endif	/* UART_PROTOCOL_H */
 
+void SetRobotState(int controle);
+void SetRobotAutoControlState(int controle);

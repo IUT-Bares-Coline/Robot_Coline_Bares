@@ -124,26 +124,48 @@ void UartDecodeMessage(unsigned char c) {
     }
 }
 
+
 int GetDecodedFunction()
 {
     return msgDecodedFunction;
 }
-/*
-void UartProcessDecodedMessage (unsigned char function , unsigned char payloadLength , unsigned char payload [ ] )
-{
-// Fonction éappele après le décodage pour excuter l?action
-// c o r r e s p o n d a n t au message çreu
-switch(msgFunction)
-{
-case SET_ROBOT_STATE:
-SetRobotState( msgPayload [ 0 ] ) ;
-break ;
-case SET_ROBOT_MANUAL_CONTROL:
-SetRobotAutoControlState ( msgPayload [ 0 ] ) ;
-break ;
-default :
-break ;
-}
-}
-*/
 
+
+//int msgFunction =0;
+//unsigned char msgPayload[] = {0};
+
+// msgFunction = function and msgPayload = payload ???
+void ProcessDecodedMessage (unsigned char function , unsigned char payloadLength , unsigned char payload [ ] )
+{
+// Fonction appelée après le décodage pour excuter l'action
+// correspondant au message reçu
+    switch(function)
+    {
+        case SET_ROBOT_STATE:
+            SetRobotState(payload[0]);
+            break ;
+        case SET_ROBOT_MANUAL_CONTROL:
+            SetRobotAutoControlState(payload[0]);
+            break ;
+        default :
+            break ;
+    }
+}
+
+void SetRobotState(int controle)
+{
+
+}
+
+
+void SetRobotAutoControlState(int controle)
+{
+    /*
+     if(controle==1)
+     * {
+     * //passage manuel
+     * }
+     
+     */
+   
+}
