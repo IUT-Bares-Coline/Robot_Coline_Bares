@@ -40,6 +40,8 @@ void SendRobotState();
 void SetNextRobotStateInAutomaticMode();
 
 
+void SetRobotState(unsigned char state);
+void SetRobotAutoControlState(unsigned char controle);
 
 
 #endif	/* MAIN_H */

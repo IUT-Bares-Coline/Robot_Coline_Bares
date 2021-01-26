@@ -28,7 +28,9 @@ namespace projetrobotCB
         LEDSetUp = 0x0020,
         IRDistance = 0x0030,
         SpeedSetUp = 0x0040,
-        ChangeState = 0x0050
+        ChangeState = 0x0050,
+        SetRobotState = 0x0051,
+        SetRobotManualControl = 0x0052
     }
 
     public enum StateRobot
@@ -120,6 +122,7 @@ namespace projetrobotCB
             }
 
             SendMessage();
+
         }
 
         private void textBoxEmission_KeyUp(object sender, KeyEventArgs e)
@@ -147,6 +150,7 @@ namespace projetrobotCB
             UartEncodeAndSendMessage((ushort)MsgFunctions.SpeedSetUp, 2, new byte[] { 50, 20 });
 
             //UartEncodeAndSendMessage(0x0080, (UInt16)array.Length, array);
+            //UartEncodeAndSendMessage(0x0052, 1, new byte[] { 0 } );
         }
 
         private byte CalculateChecksum(ushort msgFunction, ushort msgPayloadLength, byte[] msgPayload)
@@ -179,6 +183,11 @@ namespace projetrobotCB
             for (int i = 0; i < msgPayloadLength; i++)
             {
                 message[pos++] = msgPayload[i];
+            }
+
+            if(msgFunction == 0x0052)
+            {
+                int autoControlActivated = msgPayload[0] ;
             }
 
             message[pos++] = CalculateChecksum(msgFunction, msgPayloadLength, msgPayload);

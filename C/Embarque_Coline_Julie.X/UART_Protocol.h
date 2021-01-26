@@ -36,5 +36,5 @@ void ProcessDecodedMessage(unsigned char function, unsigned char payloadLength, 
 int GetDecodedFunction(void);
 #endif	/* UART_PROTOCOL_H */
 
-void SetRobotState(int controle);
-void SetRobotAutoControlState(int controle);
+//void SetRobotState(int controle);
+//void SetRobotAutoControlState(int controle);

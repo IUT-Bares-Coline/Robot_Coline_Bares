@@ -97,7 +97,9 @@ int main(void) {
             unsigned char msgPayload1[] = {robotState.distanceTelemetreGauche, robotState.distanceTelemetreCentre, robotState.distanceTelemetreDroit};
             UartEncodeAndSendMessage(0x0030, 3, msgPayload1);
             
+            
             DecodeMessage();
+            
             
         }
         
@@ -119,6 +121,22 @@ int main(void) {
     
 
 unsigned char stateRobot;
+unsigned char automaticMode=1;
+
+void SetRobotState(unsigned char state)
+{
+    stateRobot=state;
+}
+
+void SetRobotAutoControlState(unsigned char controle)
+{    
+     if(controle==1)
+        {
+         automaticMode = 1;
+        }
+     else 
+         automaticMode = 0;
+}
 
 
 void OperatingSystemLoop(void) {
@@ -145,7 +163,8 @@ void OperatingSystemLoop(void) {
             stateRobot = STATE_AVANCE_EN_COURS;
             break;
         case STATE_AVANCE_EN_COURS:
-            SetNextRobotStateInAutomaticMode();
+            if(automaticMode)
+                SetNextRobotStateInAutomaticMode();
             break;
 
         case STATE_TOURNE_GAUCHE:
@@ -156,7 +175,8 @@ void OperatingSystemLoop(void) {
             stateRobot = STATE_TOURNE_GAUCHE_EN_COURS;
             break;
         case STATE_TOURNE_GAUCHE_EN_COURS:
-            SetNextRobotStateInAutomaticMode();
+            if(automaticMode)
+                SetNextRobotStateInAutomaticMode();
             break;
 
         case STATE_TOURNE_DROITE:
@@ -167,7 +187,9 @@ void OperatingSystemLoop(void) {
             stateRobot = STATE_TOURNE_DROITE_EN_COURS;
             break;
         case STATE_TOURNE_DROITE_EN_COURS:
-            SetNextRobotStateInAutomaticMode();
+            
+            if(automaticMode)
+                SetNextRobotStateInAutomaticMode();
             break;
 
         case STATE_TOURNE_SUR_PLACE_GAUCHE:
@@ -178,7 +200,9 @@ void OperatingSystemLoop(void) {
             stateRobot = STATE_TOURNE_SUR_PLACE_GAUCHE_EN_COURS;
             break;
         case STATE_TOURNE_SUR_PLACE_GAUCHE_EN_COURS:
-            SetNextRobotStateInAutomaticMode();
+            
+            if(automaticMode)
+                SetNextRobotStateInAutomaticMode();
             break;
 
         case STATE_TOURNE_SUR_PLACE_DROITE:
@@ -189,7 +213,10 @@ void OperatingSystemLoop(void) {
             stateRobot = STATE_TOURNE_SUR_PLACE_DROITE_EN_COURS;
             break;
         case STATE_TOURNE_SUR_PLACE_DROITE_EN_COURS:
-            SetNextRobotStateInAutomaticMode();
+            
+            if(automaticMode)
+                SetNextRobotStateInAutomaticMode();
+            
             break;
 
         default:
