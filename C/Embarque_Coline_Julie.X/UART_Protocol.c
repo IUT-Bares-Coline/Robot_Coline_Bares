@@ -60,37 +60,37 @@ void UartDecodeMessage(unsigned char c) {
 
     switch (rcvState) {
         case Waiting:
-
-            if (c == 0xFE) rcvState = FunctionMSB;
+            if (c == 0xFE)
+                rcvState = FunctionMSB;
             break;
 
         case FunctionMSB:
-
             msgDecodedFunction = (short) (c << 8);
             rcvState = FunctionLSB;
             break;
 
         case FunctionLSB:
-
             msgDecodedFunction += c;
             rcvState = PayloadLengthMSB;
             break;
 
         case PayloadLengthMSB:
-
             msgDecodedPayloadLength = (short) (c << 8);
             rcvState = PayloadLengthLSB;
             break;
 
         case PayloadLengthLSB:
-
             msgDecodedPayloadLength += c;
             if (msgDecodedPayloadLength == 0) {
                 rcvState = CheckSum;
-            } else if (msgDecodedPayloadLength < MAX_MSG_PAYLOAD_LENGTH) {
+            } 
+            else if (msgDecodedPayloadLength < MAX_MSG_PAYLOAD_LENGTH) 
+            {
                 rcvState = Payload;
                 msgDecodedPayloadIndex = 0;
-            } else {
+            }
+            else 
+            {
                 rcvState = Waiting;
             }
             break;
@@ -98,8 +98,7 @@ void UartDecodeMessage(unsigned char c) {
         case Payload:
             msgDecodedPayload[msgDecodedPayloadIndex++] = c;
             if (msgDecodedPayloadIndex >= msgDecodedPayloadLength)
-                rcvState = CheckSum;
-            
+                rcvState = CheckSum;            
             break;
 
         case CheckSum:

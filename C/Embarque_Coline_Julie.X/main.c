@@ -103,14 +103,14 @@ void SetRobotState(unsigned char state)
 
 void SetRobotAutoControlState(unsigned char controle)
 {    
-     if(controle==1)
+     if(controle==0x31)
         {
          automaticMode = 1;
         }
      else
      {
          automaticMode = 0;
-         stateRobot = STATE_ATTENTE;
+         //stateRobot = STATE_ATTENTE;
      }
 }
 
@@ -141,6 +141,8 @@ void OperatingSystemLoop(void) {
         case STATE_AVANCE_EN_COURS:
             if(automaticMode)
                 SetNextRobotStateInAutomaticMode();
+            else
+                stateRobot = STATE_ATTENTE;
             break;
 
         case STATE_TOURNE_GAUCHE:
@@ -153,6 +155,8 @@ void OperatingSystemLoop(void) {
         case STATE_TOURNE_GAUCHE_EN_COURS:
             if(automaticMode)
                 SetNextRobotStateInAutomaticMode();
+            else
+                stateRobot = STATE_ATTENTE;
             break;
 
         case STATE_TOURNE_DROITE:
@@ -166,6 +170,8 @@ void OperatingSystemLoop(void) {
             
             if(automaticMode)
                 SetNextRobotStateInAutomaticMode();
+            else
+                stateRobot = STATE_ATTENTE;
             break;
 
         case STATE_TOURNE_SUR_PLACE_GAUCHE:
@@ -192,6 +198,8 @@ void OperatingSystemLoop(void) {
             
             if(automaticMode)
                 SetNextRobotStateInAutomaticMode();
+            else
+                stateRobot = STATE_ATTENTE;
             break;
 
         default:
