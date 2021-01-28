@@ -15,6 +15,10 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
+//Dans Form1.cs ?? :
+using MouseKeyboardActivityMonitor.WinApi;
+using MouseKeyboardActivityMonitor;
+
 namespace projetrobotCB
 {
     /// <summary>
@@ -60,6 +64,8 @@ namespace projetrobotCB
         ReliableSerialPort serialPort1;
         DispatcherTimer timerAffichage;
 
+        private readonly KeyboardHookListener m_KeyboardHookManager;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -72,6 +78,12 @@ namespace projetrobotCB
             serialPort1 = new ReliableSerialPort("COM6", 115200, System.IO.Ports.Parity.None, 8, System.IO.Ports.StopBits.One);
             serialPort1.DataReceived += SerialPort1_DataReceived;
             serialPort1.Open();
+
+            //à comprendre et à commenter (pour ne pas oublier) :
+
+            //m_KeyboardHookManager = new KeyboardHookListener(new GlobalHooker());
+            //m_KeyboardHookManager.Enabled = true;
+            //m_KeyboardHookManager.KeyDown += HookManager_KeyDown;
         }
 
         private void TimerAffichage_Tick(object sender, EventArgs e)

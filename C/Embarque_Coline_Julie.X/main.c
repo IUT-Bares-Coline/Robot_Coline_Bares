@@ -110,9 +110,8 @@ void SetRobotAutoControlState(unsigned char controle)
      else
      {
          automaticMode = 0;
-         //stateRobot = STATE_ATTENTE;
      }
-}
+} //le mode automatique/manuel marche a la perfection (youhou)
 
 
 void OperatingSystemLoop(void) {
