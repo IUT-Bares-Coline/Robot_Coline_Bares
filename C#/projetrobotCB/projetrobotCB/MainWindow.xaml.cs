@@ -149,8 +149,7 @@ namespace projetrobotCB
             UartEncodeAndSendMessage((ushort)MsgFunctions.IRDistance, 3, new byte[] { 10, 20, 50 });
             UartEncodeAndSendMessage((ushort)MsgFunctions.SpeedSetUp, 2, new byte[] { 50, 20 });
 
-            //UartEncodeAndSendMessage(0x0080, (UInt16)array.Length, array);
-            //UartEncodeAndSendMessage(0x0052, 1, new byte[] { 0 } );
+            
         }
 
         private byte CalculateChecksum(ushort msgFunction, ushort msgPayloadLength, byte[] msgPayload)
@@ -296,6 +295,11 @@ namespace projetrobotCB
                 case MsgFunctions.TextTransmission:
                     textBoxReception.Text += Encoding.UTF8.GetString(msgPayload, 0, msgPayload.Length)+"\n";
                     break;
+
+                case MsgFunctions.SetRobotManualControl:
+                    textBoxReception.Text += Encoding.UTF8.GetString(msgPayload, 0, msgPayload.Length) + "\n";
+                    break;
+
                 case MsgFunctions.LEDSetUp:
                     int numLed = msgPayload[0];
                     int ledState = msgPayload[1];
@@ -324,6 +328,7 @@ namespace projetrobotCB
                             break;
                     }
                     break;
+
                 case MsgFunctions.IRDistance:
                     int gauche = msgPayload[0];
                     labelTelemetreGauche.Content = "Telemètre gauche : " + gauche.ToString() + " cm";
@@ -332,12 +337,14 @@ namespace projetrobotCB
                     int droite = msgPayload[2];
                     labelTelemetreDroit.Content = "Telemètre droit : " + droite.ToString() + " cm";
                     break;
+
                 case MsgFunctions.SpeedSetUp:
                     int moteurG = msgPayload[0];
-                    labelVitesseG.Content = "Vitesse moteur gauche : " + moteurG.ToString() + " cm";
+                    labelVitesseG.Content = "Vitesse moteur gauche : " + moteurG.ToString() + " ";
                     int moteurD = msgPayload[1];
-                    labelVitesseD.Content = "Vitesse moteur droit : " + moteurD.ToString() + " cm";
+                    labelVitesseD.Content = "Vitesse moteur droit : " + moteurD.ToString() + " ";
                     break;
+
                 case MsgFunctions.ChangeState:
                     int instant = (((int)msgPayload[1]) << 24) + (((int)msgPayload[2]) << 16) 
                     + (((int)msgPayload[3]) << 8) + ((int)msgPayload[4]);
@@ -345,6 +352,20 @@ namespace projetrobotCB
                     ((StateRobot)(msgPayload[0])).ToString() +" − " + instant.ToString() + " ms";
                     break;
             }
+        }
+
+        private void Manuel_Click(object sender, RoutedEventArgs e)
+        {
+            string num = "0";
+            byte[] numarray = Encoding.ASCII.GetBytes(num);
+            UartEncodeAndSendMessage((ushort)MsgFunctions.SetRobotManualControl, 1, numarray);
+        }
+
+        private void automatique_Click(object sender, RoutedEventArgs e)
+        {
+            string num = "1";
+            byte[] numarray = Encoding.ASCII.GetBytes(num);
+            UartEncodeAndSendMessage((ushort)MsgFunctions.SetRobotManualControl, 1, numarray);
         }
 
 

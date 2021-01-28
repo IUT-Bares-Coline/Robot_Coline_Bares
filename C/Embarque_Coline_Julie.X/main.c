@@ -40,23 +40,19 @@ int main(void) {
     //void __attribute__((interrupt, no_auto_psv)) _T3Interrupt();
     //robotState.vitesseDroiteConsigne = 30;
 
-
-    void DecodeMessage()
-    {
-        if(CB_RX1_IsDataAvailable > 0)
-        {
-            char c = CB_RX1_Get();
-            UartDecodeMessage(c);
-        }
-    }
-    
-
     /****************************************************************************************************/
     // Boucle Principale
     /****************************************************************************************************/
     while (1) {
         //LED_BLANCHE=!LED_BLANCHE ;
         //LED_ORANGE=!LED_ORANGE;
+        
+        //On gère les éventuels byte stockés dans la queue de réception
+        if(CB_RX1_IsDataAvailable() > 0)
+        {
+            char c = CB_RX1_Get();
+            UartDecodeMessage(c);
+        }
 
         if (ADCIsConversionFinished() == 1) {
             ADCClearConversionFinishedFlag();
@@ -86,36 +82,13 @@ int main(void) {
                 LED_BLANCHE = 1;
             } else {
                 LED_BLANCHE = 0;
-            }
-            
+            }            
+            unsigned char msgPayload1[] = {robotState.distanceTelemetreGauche, robotState.distanceTelemetreCentre, robotState.distanceTelemetreDroit};
+            UartEncodeAndSendMessage(0x0030, 3, msgPayload1);  
+                        
             //unsigned char msgPayload[] = {'B', 'o', 'n', 'j', 'o', 'u', 'r',};
             //UartEncodeAndSendMessage(0x0080, 7, msgPayload);
-            
-            //unsigned char msgPayload1[] = {1, 1};
-            //UartEncodeAndSendMessage(0x0020, 2, msgPayload1);
-            
-            unsigned char msgPayload1[] = {robotState.distanceTelemetreGauche, robotState.distanceTelemetreCentre, robotState.distanceTelemetreDroit};
-            UartEncodeAndSendMessage(0x0030, 3, msgPayload1);
-            
-            
-            DecodeMessage();
-            
-            
         }
-        
-        
-        //SendMessageDirect((unsigned char*)"bonjour",7);
-        //__delay32(4000000);
-        //SendMessage((unsigned char*) "bonjour", 7);
-        
-        /*
-        int i;
-        for(i=0; i<CB_RX1_GetDataSize(); i++){
-            unsigned char c = CB_RX1_Get();
-            SendMessage(&c, 1);
-        }
-        __delay32(1000);
-        */
     }    
 }// fin main
     
@@ -134,8 +107,11 @@ void SetRobotAutoControlState(unsigned char controle)
         {
          automaticMode = 1;
         }
-     else 
+     else
+     {
          automaticMode = 0;
+         stateRobot = STATE_ATTENTE;
+     }
 }
 
 
@@ -216,7 +192,6 @@ void OperatingSystemLoop(void) {
             
             if(automaticMode)
                 SetNextRobotStateInAutomaticMode();
-            
             break;
 
         default:
