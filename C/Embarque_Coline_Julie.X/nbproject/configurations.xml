@@ -33,11 +33,11 @@
       <itemPath>ToolBox.c</itemPath>
       <itemPath>main.c</itemPath>
       <itemPath>timer.c</itemPath>
-      <itemPath>QEI.C</itemPath>
       <itemPath>UART.c</itemPath>
       <itemPath>CB_TX1.c</itemPath>
       <itemPath>CB_RX1.c</itemPath>
       <itemPath>UART_Protocol.c</itemPath>
+      <itemPath>QEI.C</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -301,20 +301,6 @@
         <property key="programoptions.uselvpprogramming" value="false"/>
         <property key="voltagevalue" value="3.25"/>
       </ICD3PlatformTool>
-      <item path="QEI.C" ex="true" overriding="false">
-        <C30>
-        </C30>
-        <C30-AR>
-        </C30-AR>
-        <C30-AS>
-        </C30-AS>
-        <C30-CO>
-        </C30-CO>
-        <C30-LD>
-        </C30-LD>
-        <C30Global>
-        </C30Global>
-      </item>
       <item path="QEI.h" ex="true" overriding="false">
         <C30>
         </C30>

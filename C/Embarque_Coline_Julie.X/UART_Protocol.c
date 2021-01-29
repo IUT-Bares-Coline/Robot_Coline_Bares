@@ -154,18 +154,3 @@ void ProcessDecodedMessage (unsigned char function , unsigned char payloadLength
             break ;
     }
 }
-
-/*void SetRobotState(int controle)
-{
-    int state = 2 ;
-}
-
-
-void SetRobotAutoControlState(int controle)
-{    
-     if(controle==1)
-        {
-        SetNextRobotStateInAutomaticMode;
-        }
-}
-*/

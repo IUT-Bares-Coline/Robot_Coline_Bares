@@ -68,14 +68,14 @@ void InitIO()
 
     _TRISE13 = 1; // jack
     
-    /*
-      // ???????????????????? QEI ?????????????????
+    
+      //**********QEI**********
     _QEA2R = 97; // assign QEIA to pin RP97
     _QEB2R = 96; // assign QEIB to pin RP96
     _QEA1R = 70; // assign QEIA to pin RP70
     _QEB1R = 69; // assign QEIB to pin RP69
 
-    */
+    
     
     
     

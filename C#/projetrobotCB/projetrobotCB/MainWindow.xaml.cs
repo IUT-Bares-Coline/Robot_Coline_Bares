@@ -15,6 +15,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
+using System.Windows.Forms;
+
 //Dans Form1.cs ?? :
 using MouseKeyboardActivityMonitor.WinApi;
 using MouseKeyboardActivityMonitor;
@@ -81,12 +83,46 @@ namespace projetrobotCB
 
             //à comprendre et à commenter (pour ne pas oublier) :
 
-            //m_KeyboardHookManager = new KeyboardHookListener(new GlobalHooker());
-            //m_KeyboardHookManager.Enabled = true;
-            //m_KeyboardHookManager.KeyDown += HookManager_KeyDown;
+            m_KeyboardHookManager = new KeyboardHookListener(new GlobalHooker());
+            m_KeyboardHookManager.Enabled = true;
+            m_KeyboardHookManager.KeyDown += HookManager_KeyDown;
         }
 
-        private void TimerAffichage_Tick(object sender, EventArgs e)
+        bool autoControlActivated = true;
+
+        private void HookManager_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            if(autoControlActivated == false )
+            { 
+
+                switch (e.KeyCode)
+                {
+                    case Keys.Left :
+                        UartEncodeAndSendMessage(0x0051, 1, new byte[] {( byte ) StateRobot.STATE_TOURNE_SUR_PLACE_GAUCHE }) ;
+                        break;
+
+                    case Keys.Right :
+                        UartEncodeAndSendMessage(0x0051, 1, new byte[] {( byte ) StateRobot.STATE_TOURNE_SUR_PLACE_DROITE });
+                        break;
+                    
+                    case Keys.Up:
+                        UartEncodeAndSendMessage(0x0051, 1, new byte[] {( byte ) StateRobot.STATE_AVANCE });
+                        break;
+                    
+                    case Keys.PageDown:
+                        UartEncodeAndSendMessage(0x0051, 1, new byte[] { ( byte ) StateRobot.STATE_ARRET });  
+                        break;
+                    
+                    case Keys.Down :
+                        UartEncodeAndSendMessage(0x0051, 1, new byte[] { ( byte ) StateRobot.STATE_RECULE });
+                        break;
+                }
+            }
+        }
+
+
+
+    private void TimerAffichage_Tick(object sender, EventArgs e)
         {
             //throw new NotImplementedException();
             while (robot.MessageQueue.Count > 0)
@@ -137,7 +173,7 @@ namespace projetrobotCB
 
         }
 
-        private void textBoxEmission_KeyUp(object sender, KeyEventArgs e)
+        private void textBoxEmission_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
@@ -196,10 +232,7 @@ namespace projetrobotCB
                 message[pos++] = msgPayload[i];
             }
 
-            if(msgFunction == 0x0052)
-            {
-                int autoControlActivated = msgPayload[0] ;
-            }
+
 
             message[pos++] = CalculateChecksum(msgFunction, msgPayloadLength, msgPayload);
 
@@ -371,6 +404,8 @@ namespace projetrobotCB
             string num = "0";
             byte[] numarray = Encoding.ASCII.GetBytes(num);
             UartEncodeAndSendMessage((ushort)MsgFunctions.SetRobotManualControl, 1, numarray);
+            autoControlActivated = false;
+
         }
 
         private void automatique_Click(object sender, RoutedEventArgs e)
@@ -378,6 +413,7 @@ namespace projetrobotCB
             string num = "1";
             byte[] numarray = Encoding.ASCII.GetBytes(num);
             UartEncodeAndSendMessage((ushort)MsgFunctions.SetRobotManualControl, 1, numarray);
+            autoControlActivated = true;
         }
 
 
