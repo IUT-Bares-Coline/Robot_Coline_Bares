@@ -21,6 +21,8 @@ using System.Windows.Forms;
 using MouseKeyboardActivityMonitor.WinApi;
 using MouseKeyboardActivityMonitor;
 
+using Utilities;
+
 namespace projetrobotCB
 {
     /// <summary>
@@ -37,7 +39,7 @@ namespace projetrobotCB
         ChangeState = 0x0050,
         SetRobotState = 0x0051,
         SetRobotManualControl = 0x0052,
-        DataReceive = 0x0061
+        DataPosition = 0x0061
     }
 
     public enum StateRobot
@@ -398,8 +400,11 @@ namespace projetrobotCB
                     ((StateRobot)(msgPayload[0])).ToString() +" − " + instant.ToString() + " ms";
                     break;
 
-                case MsgFunctions.DataReceive:
-                    
+                case MsgFunctions.DataPosition:
+                    byte[] tab = msgPayload.GetRange(4, 4); //4 de gauche = offset
+                    robot.positionXOdo += tab.GetFloat();
+                    textBoxReception.Text += "\nposition en x : " + robot.positionXOdo.ToString() + "\n";
+
                     break;
             }
         }

@@ -120,3 +120,31 @@ void PWMSetSpeedConsigne(float vitesseEnPourcents, char moteur) {
 
     }
 }
+
+/*
+#define COEFF_VITESSE_LINEAIRE_PERCENT 1/25.
+#define COEFF_VITESSE_ANGULAIRE_PERCENT 1/50.
+void PWMSetSpeedConsignePolaire(){
+// C o r r e c ti o n A n g ul ai r e
+double erreurVitesseAngulaire = ...
+double s o r t i e C o r r e c t e u r A n g u l a i r e = . . .
+double c o r r e c t i o n V i t e s s e A n g u l a i r e = . . .
+double c o r r e c ti o n Vi t e s s e A n g ul ai r e P o u r c e n t =
+c o r r e c t i o n V i t e s s e A n g u l a i r e ? COEFF\_VITESSE\_ANGULAIRE\_PERCENT;
+// C o r r e c ti o n ÈL i n a i r e
+double e r r e u r V i t e s s e L i n e a i r e = . . .
+double s o r t i e C o r r e c t e u r L i n e a i r e = . . .
+double c o r r e c t i o n V i t e s s e L i n e a i r e = . . .
+double c o r r e c t i o n V i t e s s e L i n e a i r e P o u r c e n t =
+c o r r e c t i o n V i t e s s e L i n e a i r e ? COEFF\_VITESSE\_LINEAIRE\_PERCENT;
+//ÈÈGnration de s c o n si g n e s d r o i t e e t gauche
+r o b o t S t a t e . vi t e s s e D r oi t e C o n si g n e = c o r r e c t i o n V i t e s s e L i n e a i r e P o u r c e n t
++ c o r r e c ti o n Vi t e s s e A n g ul ai r e P o u r c e n t ;
+r o b o t S t a t e . vi t e s s e D r oi t e C o n si g n e = Limi t T o I n t e r v al (
+r o b o t S t a t e . vi t e s s e D r oi t e C o n si g n e , ?100, 1 0 0 ) ;
+r o b o t S t a t e . vi t e s s eG a u c h eC o n si g n e = c o r r e c t i o n V i t e s s e L i n e a i r e P o u r c e n t
+? c o r r e c ti o n Vi t e s s e A n g ul ai r e P o u r c e n t ;
+r o b o t S t a t e . vi t e s s eG a u c h eC o n si g n e = Limi t T o I n t e r v al (
+r o b o t S t a t e . vi te s seG aucheC on si gne , ?100, 1 0 0 ) ;
+}
+*/

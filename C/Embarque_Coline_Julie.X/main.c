@@ -40,6 +40,9 @@ int main(void) {
     //void __attribute__((interrupt, no_auto_psv)) _T3Interrupt();
     //robotState.vitesseDroiteConsigne = 30;
 
+    InitQEI1();
+    InitQEI2() ;
+    
     /****************************************************************************************************/
     // Boucle Principale
     /****************************************************************************************************/

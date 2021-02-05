@@ -48,3 +48,11 @@ C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\obj\Debug\projetrobo
 C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\bin\Debug\MouseKeyboardActivityMonitor.dll
 C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\bin\Debug\Utilities.dll
 C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\bin\Debug\Utilities.pdb
+C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\bin\Debug\SciChart.Charting.dll
+C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\bin\Debug\SciChart.Core.dll
+C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\bin\Debug\SciChart.Data.dll
+C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\bin\Debug\SciChart.Drawing.dll
+C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\bin\Debug\SciChart.Charting.xml
+C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\bin\Debug\SciChart.Core.xml
+C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\bin\Debug\SciChart.Data.xml
+C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\bin\Debug\SciChart.Drawing.xml

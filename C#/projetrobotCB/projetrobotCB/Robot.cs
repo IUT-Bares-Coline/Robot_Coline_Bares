@@ -13,6 +13,7 @@ namespace projetrobotCB
     {
         public string receivedText = "";
         public ConcurrentQueue<Message> MessageQueue = new ConcurrentQueue<Message>();
+        public float positionXOdo ;
     }
 
     //class message 

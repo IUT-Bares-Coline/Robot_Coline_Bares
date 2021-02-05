@@ -31,8 +31,8 @@ QEI2GECH = 0xFFFF;
 QEI2CONbits.QEIEN = 1 ; // Enable QEI Module
 }
 
-float QeiDroitPosition_T_1 , QeiDroitPosition, QeiGauchePosition_T_1, QeiGauchePosition, delta_d, delta_g, delta_theta, dx ;
-
+float QeiDroitPosition_T_1=0 , QeiDroitPosition=0, QeiGauchePosition_T_1=0, QeiGauchePosition=0, delta_d = 0, delta_g = 0, delta_theta, dx ;
+        
 void QEIUpdateData()
 {
 //On s au ve g a rde l e s a n ci e n n e s v al e u r s
@@ -71,6 +71,7 @@ robotState.angleRadianFromOdometry_1 = robotState.angleRadianFromOdometry ;
 
 // Calcul des positions dans le  referentiel du terrain
 robotState.xPosFromOdometry = robotState.xPosFromOdometry_1 + dx * cos(delta_theta); //????
+//robotState.xPosFromOdometry = 5;
 robotState.yPosFromOdometry = robotState.yPosFromOdometry_1 + dx * sin(delta_theta);//????
 robotState.angleRadianFromOdometry = robotState.angleRadianFromOdometry_1 + delta_theta;//????
 if(robotState.angleRadianFromOdometry > PI )
