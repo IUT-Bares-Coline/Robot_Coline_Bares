@@ -36,7 +36,8 @@ namespace projetrobotCB
         SpeedSetUp = 0x0040,
         ChangeState = 0x0050,
         SetRobotState = 0x0051,
-        SetRobotManualControl = 0x0052
+        SetRobotManualControl = 0x0052,
+        DataReceive = 0x0061
     }
 
     public enum StateRobot
@@ -77,7 +78,7 @@ namespace projetrobotCB
             timerAffichage.Tick += TimerAffichage_Tick;
             timerAffichage.Start();
 
-            serialPort1 = new ReliableSerialPort("COM6", 115200, System.IO.Ports.Parity.None, 8, System.IO.Ports.StopBits.One);
+            serialPort1 = new ReliableSerialPort("COM8", 115200, System.IO.Ports.Parity.None, 8, System.IO.Ports.StopBits.One);
             serialPort1.DataReceived += SerialPort1_DataReceived;
             serialPort1.Open();
 
@@ -395,6 +396,10 @@ namespace projetrobotCB
                     + (((int)msgPayload[3]) << 8) + ((int)msgPayload[4]);
                     textBoxReception.Text += " \nRobot State : " +
                     ((StateRobot)(msgPayload[0])).ToString() +" − " + instant.ToString() + " ms";
+                    break;
+
+                case MsgFunctions.DataReceive:
+                    
                     break;
             }
         }

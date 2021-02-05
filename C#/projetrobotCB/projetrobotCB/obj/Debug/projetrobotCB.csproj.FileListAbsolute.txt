@@ -46,3 +46,5 @@ C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\obj\Debug\projetrobo
 C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\obj\Debug\projetrobotCB.pdb
 C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\obj\Debug\projetrobotCB.csproj.CoreCompileInputs.cache
 C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\bin\Debug\MouseKeyboardActivityMonitor.dll
+C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\bin\Debug\Utilities.dll
+C:\GitHub\Robot_Coline_Bares\C#\projetrobotCB\projetrobotCB\bin\Debug\Utilities.pdb
