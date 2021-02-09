@@ -122,7 +122,7 @@ void PWMSetSpeedConsigne(float vitesseEnPourcents, char moteur) {
 }
 
 
-#define COEFF_VITESSE_LINEAIRE_PERCENT 1/10.
+#define COEFF_VITESSE_LINEAIRE_PERCENT 1/25.
 #define COEFF_VITESSE_ANGULAIRE_PERCENT 1/50.
 #define P 1
 #define DISTROUES 281.2
