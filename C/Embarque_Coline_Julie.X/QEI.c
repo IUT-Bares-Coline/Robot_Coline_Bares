@@ -15,6 +15,8 @@
 #define PI 3.141592653589793
 #define POSITION_DATA 0x0061
 
+#define POINT_TO_MM 0.000019819
+
 
 void InitQEI1()
 {
@@ -45,13 +47,14 @@ QEI1RawValue += ( ( long )POS1HLD<<16);
 long QEI2RawValue = POS2CNTL;
 QEI2RawValue += ( ( long )POS2HLD<<16);
 
-// C onve r si on en mm ( r \ ? e g l \ ? e pour l a t a i l l e de s r o u e s c o d e u s e s )
-QeiDroitPosition = 0.01620 * QEI1RawValue ;
-QeiGauchePosition = -0.01620 * QEI2RawValue ;
+// Conversion en mm ( r \ ? e g l \ ? e pour l a t a i l l e de s r o u e s c o d e u s e s )
+QeiDroitPosition = POINT_TO_MM * QEI1RawValue ;
+QeiGauchePosition = -POINT_TO_MM * QEI2RawValue ;
 
 // C al c ul de s d e l t a s de p o s i t i o n
 delta_d = QeiDroitPosition - QeiDroitPosition_T_1 ;
 delta_g = QeiGauchePosition - QeiGauchePosition_T_1 ;
+
 // d el t a_ t h e t a = atan ( ( delta_d ? del ta_g ) / DISTROUES) ;
 delta_theta = ( delta_d - delta_g ) / DISTROUES;
 dx = ( delta_d + delta_g ) / 2 ;
@@ -60,8 +63,7 @@ dx = ( delta_d + delta_g ) / 2 ;
 // attention à remultiplier par la éfrquence dé?chantillonnage
 robotState.vitesseDroitFromOdometry = delta_d *FREQ_ECH_QEI;
 robotState.vitesseGaucheFromOdometry = delta_g*FREQ_ECH_QEI;
-robotState.vitesseLineaireFromOdometry =
-(robotState.vitesseDroitFromOdometry + robotState.vitesseGaucheFromOdometry ) / 2 ;
+robotState.vitesseLineaireFromOdometry = (robotState.vitesseDroitFromOdometry + robotState.vitesseGaucheFromOdometry ) / 2 ;
 robotState.vitesseAngulaireFromOdometry = delta_theta*FREQ_ECH_QEI;
 
 //Mise à jour du p ositionnment terrain à t?1

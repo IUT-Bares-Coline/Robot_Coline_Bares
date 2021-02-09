@@ -27,6 +27,9 @@ union {
         double xPosFromOdometry_1;
         double yPosFromOdometry_1;
         
+        double vitesseLineaireConsigne;
+        double vitesseAngulaireConsigne;
+        
             } ;
     } ; 
 } 

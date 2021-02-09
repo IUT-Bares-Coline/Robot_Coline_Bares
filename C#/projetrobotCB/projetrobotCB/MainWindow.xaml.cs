@@ -402,9 +402,10 @@ namespace projetrobotCB
 
                 case MsgFunctions.DataPosition:
                     byte[] tab = msgPayload.GetRange(4, 4); //4 de gauche = offset
-                    robot.positionXOdo += tab.GetFloat();
-                    textBoxReception.Text += "\nposition en x : " + robot.positionXOdo.ToString() + "\n";
-
+                    robot.positionXOdo = tab.GetFloat();
+                    textBoxReception.Text = "Pos x : " + robot.positionXOdo.ToString() + "\n" + textBoxReception.Text;
+                    if (textBoxReception.Text.Length > 2000)
+                        textBoxReception.Text = textBoxReception.Text.Substring(0, 2000);
                     break;
             }
         }
