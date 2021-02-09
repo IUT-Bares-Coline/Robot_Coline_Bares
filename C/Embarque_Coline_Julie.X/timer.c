@@ -96,13 +96,16 @@ void InitTimer1(void) {
 //    }
 //}
 
-int T1counter =0;
+int T1counter = 0;
 
 void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void) {
     IFS0bits.T1IF = 0;    
+    
+    //OperatingSystemLoop();
+    QEIUpdateData() ;
     PWMUpdateSpeed();
     ADC1StartConversionSequence();
-    QEIUpdateData() ;
+    
     
     if(T1counter++%10==0)
         SendPositionData ();

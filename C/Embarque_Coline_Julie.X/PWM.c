@@ -124,7 +124,8 @@ void PWMSetSpeedConsigne(float vitesseEnPourcents, char moteur) {
 
 #define COEFF_VITESSE_LINEAIRE_PERCENT 1/25.
 #define COEFF_VITESSE_ANGULAIRE_PERCENT 1/50.
-#define P 1
+#define P_angulaire 1
+#define P_lineaire 1
 #define DISTROUES 281.2
 #define RAYONROUE 0.02584
 
@@ -132,20 +133,21 @@ void PWMSetSpeedConsigne(float vitesseEnPourcents, char moteur) {
 
 void PWMSetSpeedConsignePolaire(){
     
-    //robotState.vitesseLineaireConsigne = (robotState.vitesseDroiteConsigne + robotState.vitesseGaucheConsigne ) / 2 ;
-    robotState.vitesseLineaireConsigne = 1;
-    robotState.vitesseAngulaireConsigne = RAYONROUE /robotState.vitesseLineaireConsigne ;
-
+    robotState.vitesseLineaireConsigne = (robotState.vitesseDroiteConsigne + robotState.vitesseGaucheConsigne ) / 2 ;
+    //robotState.vitesseAngulaireConsigne = RAYONROUE /robotState.vitesseLineaireConsigne ;
+    robotState.vitesseAngulaireConsigne = 3 ;
+    
     // Correction Angulaire
     double erreurVitesseAngulaire = robotState.vitesseAngulaireConsigne - robotState.vitesseAngulaireFromOdometry;
-    double sortieCorrecteurAngulaire = P * erreurVitesseAngulaire;
+    double sortieCorrecteurAngulaire = P_angulaire * erreurVitesseAngulaire;
     double correctionVitesseAngulairePourcent = sortieCorrecteurAngulaire * DISTROUES/2 * COEFF_VITESSE_ANGULAIRE_PERCENT;
 
     // Correction Linéaire
     double erreurVitesseLineaire = robotState.vitesseLineaireConsigne - robotState.vitesseLineaireFromOdometry;
-    double sortieCorrecteurLineaire = P * erreurVitesseLineaire;
-    double correctionVitesseLineairePourcent = sortieCorrecteurLineaire * DISTROUES/2 * COEFF_VITESSE_LINEAIRE_PERCENT;
-
+    double sortieCorrecteurLineaire = P_lineaire * erreurVitesseLineaire;
+    //double correctionVitesseLineairePourcent = sortieCorrecteurLineaire * DISTROUES/2 * COEFF_VITESSE_LINEAIRE_PERCENT;
+    double correctionVitesseLineairePourcent = 0;
+    
     //ééGnration des consignes droite et gauche
     robotState.vitesseDroiteConsigne = correctionVitesseLineairePourcent + correctionVitesseAngulairePourcent ;
     robotState.vitesseDroiteConsigne = LimitToInterval(robotState.vitesseDroiteConsigne, -100, 100 ) ;

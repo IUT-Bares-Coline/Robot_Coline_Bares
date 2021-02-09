@@ -136,7 +136,6 @@ void OperatingSystemLoop(void) {
 
         case STATE_AVANCE:
             SendRobotState();
-            
             PWMSetSpeedConsigne(20, MOTEUR_DROIT);
             PWMSetSpeedConsigne(20, MOTEUR_GAUCHE);
             stateRobot = STATE_AVANCE_EN_COURS;
