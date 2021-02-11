@@ -7,7 +7,7 @@
 
 
 #define PWMPER 40.0
-unsigned char acceleration = 1;
+unsigned char acceleration = 1000;
 
 void InitPWM(void) {
     PTCON2bits.PCLKDIV = 0b000; //Divide by 1
@@ -122,35 +122,37 @@ void PWMSetSpeedConsigne(float vitesseEnPourcents, char moteur) {
 }
 
 
-#define COEFF_VITESSE_LINEAIRE_PERCENT 1/25.
-#define COEFF_VITESSE_ANGULAIRE_PERCENT 1/50.
-#define P_angulaire 1
-#define P_lineaire 1
-#define DISTROUES 281.2
-#define RAYONROUE 0.02584
 
 
+double sortieCorrecteurAngulaireI = 0 ;
+double sortieCorrecteurLineaireI = 0 ;
 
-void PWMSetSpeedConsignePolaire(){
+
+void PWMSetSpeedConsignePolaire(){  
     
-    robotState.vitesseLineaireConsigne = (robotState.vitesseDroiteConsigne + robotState.vitesseGaucheConsigne ) / 2 ;
+    //robotState.vitesseLineaireConsigne = (robotState.vitesseDroiteConsigne + robotState.vitesseGaucheConsigne ) / 2 ;
     //robotState.vitesseAngulaireConsigne = RAYONROUE /robotState.vitesseLineaireConsigne ;
-    robotState.vitesseAngulaireConsigne = 3 ;
+    robotState.vitesseAngulaireConsigne = 0 ;
+    robotState.vitesseLineaireConsigne = 0 ;
     
     // Correction Angulaire
     double erreurVitesseAngulaire = robotState.vitesseAngulaireConsigne - robotState.vitesseAngulaireFromOdometry;
-    double sortieCorrecteurAngulaire = P_angulaire * erreurVitesseAngulaire;
-    double correctionVitesseAngulairePourcent = sortieCorrecteurAngulaire * DISTROUES/2 * COEFF_VITESSE_ANGULAIRE_PERCENT;
+    double sortieCorrecteurAngulaireP = P_angulaire * erreurVitesseAngulaire;
+    sortieCorrecteurAngulaireI = i_angulaire*(erreurVitesseAngulaire/FREQ_ECH_QEI) + sortieCorrecteurAngulaireI ;
+    double sortieCorrecteurAngulaire = sortieCorrecteurAngulaireP + sortieCorrecteurAngulaireI ;
+    double correctionVitesseAngulairePourcent = sortieCorrecteurAngulaire * COEFF_VITESSE_ANGULAIRE_PERCENT;//sortieCorrecteurAngulaire * DISTROUES/2 * COEFF_VITESSE_ANGULAIRE_PERCENT;
 
     // Correction Linéaire
     double erreurVitesseLineaire = robotState.vitesseLineaireConsigne - robotState.vitesseLineaireFromOdometry;
-    double sortieCorrecteurLineaire = P_lineaire * erreurVitesseLineaire;
-    //double correctionVitesseLineairePourcent = sortieCorrecteurLineaire * DISTROUES/2 * COEFF_VITESSE_LINEAIRE_PERCENT;
-    double correctionVitesseLineairePourcent = 0;
+    double sortieCorrecteurLineaireP = P_lineaire * erreurVitesseLineaire;
+    sortieCorrecteurLineaireI = (i_lineaire*erreurVitesseLineaire)/FREQ_ECH_QEI + sortieCorrecteurLineaireI ;
+    double sortieCorrecteurLineaire = sortieCorrecteurLineaireP + sortieCorrecteurLineaireI ;
+    double correctionVitesseLineairePourcent = sortieCorrecteurLineaire * COEFF_VITESSE_LINEAIRE_PERCENT;//sortieCorrecteurLineaire * DISTROUES/2 * COEFF_VITESSE_LINEAIRE_PERCENT;
+    
     
     //ééGnration des consignes droite et gauche
-    robotState.vitesseDroiteConsigne = correctionVitesseLineairePourcent + correctionVitesseAngulairePourcent ;
+    robotState.vitesseDroiteConsigne = -(correctionVitesseLineairePourcent + correctionVitesseAngulairePourcent * DISTROUES/2);//-(correctionVitesseLineairePourcent + correctionVitesseAngulairePourcent) ; //"-" --> moteur inersé annette
     robotState.vitesseDroiteConsigne = LimitToInterval(robotState.vitesseDroiteConsigne, -100, 100 ) ;
-    robotState.vitesseGaucheConsigne = correctionVitesseLineairePourcent - correctionVitesseAngulairePourcent ;
+    robotState.vitesseGaucheConsigne = correctionVitesseLineairePourcent - correctionVitesseAngulairePourcent * DISTROUES/2;
     robotState.vitesseGaucheConsigne = LimitToInterval(robotState.vitesseGaucheConsigne, -100, 100 ) ;
 }

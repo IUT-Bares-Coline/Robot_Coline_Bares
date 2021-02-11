@@ -8,6 +8,7 @@
 #include "ToolBox.h"
 #include "adc.h"
 #include "main.h"
+#include "QEI.h"
 #include "UART.h"
 #include "CB_TX1.h"
 #include "CB_RX1.h"
